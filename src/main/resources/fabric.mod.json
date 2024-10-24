@@ -9,7 +9,7 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/project/tntimer",
-		"sources": "https://github.com/Gabrieli2806/tntimer-1.21.1"
+		"sources": "https://github.com/Gabrieli2806/TNTimer"
 	},
 	"license": "MIT",
 	"icon": "assets/tntimer/icon.png",
