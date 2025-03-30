@@ -1,0 +1,15 @@
+[
+{
+  "modid": "tntimer",
+  "name": "TNTimer",
+  "description": "Use the default key (K) in game to modified the mod settings. This Client-Side mod adds a countdown timer that shows exactly when the most recently placed TNT will explode. You can move the timer to six different positions on your screen, and it’s easy to access the settings with the default key 'K,' which you can change or remove in the keybinds menu. The timer turns red as the explosion gets closer, showing the remaining seconds. It’s especially useful on servers for timing TNT jumps in minigames like Bedwars or just improving your overall gameplay.",
+  "version": "1.7",
+  "url": "https://modrinth.com/mod/tntimer",
+  "Donations": "https://ko-fi.com/gabrieli2806",
+  "updateUrl": "",
+  "authorList": ["Gabrieli2806"],
+  "logoFile": "resources/icon.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
