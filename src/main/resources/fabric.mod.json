@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "tntimer",
+	"version": "${version}",
+	"name": "TNTimer",
+	"description": "This Client-Side mod adds a countdown timer that shows exactly when the most recently placed TNT will explode.",
+	"authors": [
+		"Gabrieli2806"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/tntimer",
+		"sources": "https://github.com/Gabrieli2806/TNTimer",
+		"issues": "https://github.com/Gabrieli2806/TNTimer/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/tntimer/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.g2806.tntimer.TNTCountdown"
+		],
+		"modmenu": [
+			"com.g2806.tntimer.TNTCountdownModMenuIntegration"
+		]
+	},
+	"mixins": [
+		"tntimer.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": ">=1.21.6 <=1.21.8",
+		"java": ">=21",
+		"fabric-api": ">=0.128.2"
+	},
+	"suggests": {
+		"cloth-config": ">=19.0.147",
+		"modmenu": ">=15.0.0-beta.3"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.donate": "https://ko-fi.com/gabrieli2806"
+			},
+			"update_checker": true
+		}
+	}
+}
