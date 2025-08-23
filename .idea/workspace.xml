@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5b4b19b-5cf8-4cbf-93a4-89d36cc54c0f" name="Changes" comment="" />
+    <list default="true" id="f5b4b19b-5cf8-4cbf-93a4-89d36cc54c0f" name="Changes" comment="1.21.6 to 1.21.8" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,6 +52,24 @@
       </state>
     </system>
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Gabrieli2806"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Gabrieli2806/TNTimer.git",
+    "accountId": "e23d8ae8-6b32-45ad-ac1b-92aa4c58e5c2"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -59,17 +77,19 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.TNTimer-1.21.6-to-1.21.8 [:net.fabricmc.devlaunchinjector.Main.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.TNTimer-1.21.6-to-1.21.8 [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.TNTimer-1.21.6-to-1.21.8 [runClient].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/gabri/Downloads/ALL/MC-Extra/Plugins y mods Etc/OLD/TNTimer-1.21.6-to-1.21.8&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.TNTimer-1.21.6-to-1.21.8 [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Run",
+    "Gradle.TNTimer-1.21.6-to-1.21.8 [build].executor": "Run",
+    "Gradle.TNTimer-1.21.6-to-1.21.8 [runClient].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "git-widget-placeholder": "Merging main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/gabri/Downloads/ALL/MC-Extra/Plugins y mods Etc/OLD/TNTimer-1.21.6-to-1.21.8"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Gradle.TNTimer-1.21.6-to-1.21.8 [runClient]">
     <configuration name="TNTimer-1.21.6-to-1.21.8 [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -139,6 +159,30 @@
       <option name="presentableId" value="Default" />
       <updated>1753952977519</updated>
     </task>
+    <task id="LOCAL-00001" summary="1.21.6 to 1.21.8">
+      <option name="closed" value="true" />
+      <created>1755947830643</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755947830643</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1.21.6 to 1.21.8" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.21.6 to 1.21.8" />
   </component>
 </project>
