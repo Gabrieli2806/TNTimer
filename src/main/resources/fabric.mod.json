@@ -27,19 +27,20 @@
 		"tntimer.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21.6 <=1.21.9",
+		"fabricloader": "*",
+		"minecraft": ">=1.21.9 <=1.21.10",
 		"java": ">=21",
 		"fabric-api": ">=0.128.2"
 	},
 	"suggests": {
 		"cloth-config": ">=19.0.147",
-		"modmenu": ">=15.0.0-beta.3"
+		"modmenu": ">=16.0.0-rc.1"
 	},
 	"custom": {
 		"modmenu": {
 			"links": {
-				"modmenu.donate": "https://ko-fi.com/gabrieli2806"
+				"modmenu.donate": "https://ko-fi.com/gabrieli2806",
+                "modmenu.discord": "https://discord.gg/DhBbAzugZ9"
 			},
 			"update_checker": true
 		}

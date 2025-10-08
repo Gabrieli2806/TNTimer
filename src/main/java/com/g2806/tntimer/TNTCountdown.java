@@ -27,15 +27,18 @@ public class TNTCountdown implements ClientModInitializer {
         TNTimerConfig.getInstance();
         LOGGER.info("TNTCountdown: Configuration loaded!");
 
-        // Register keybinding for configuration
+        // Register keybinding for configuration - Temporarily disabled due to Category constructor changes
+        /*
         configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.tntimer.config",
+                Identifier.of("tntimer", "config").toString(),
                 InputUtil.Type.KEYSYM,
                 InputUtil.GLFW_KEY_K,
                 "category.tntimer"
         ));
+        */
 
-        // Handle config key press
+        // Handle config key press - Temporarily disabled
+        /*
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (configKey.wasPressed()) {
                 try {
@@ -48,6 +51,7 @@ public class TNTCountdown implements ClientModInitializer {
                 }
             }
         });
+        */
 
         // Register HUD element - building on the working debug version
         HudElementRegistry.addLast(Identifier.of("tntimer", "countdown"), (context, tickCounter) -> {
