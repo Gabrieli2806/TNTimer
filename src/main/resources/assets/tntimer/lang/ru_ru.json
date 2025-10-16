@@ -24,6 +24,20 @@
   "tntimer.position.top_center": "Верхний Центр",
   "tntimer.position.bottom_center": "Нижний Центр (Над Панелью)",
   "tntimer.position.under_cursor": "Под Курсором",
+  "tntimer.displaymode.both": "Оба (HUD + 3D)",
+  "tntimer.displaymode.hud_only": "Только HUD",
+  "tntimer.displaymode.3d_only": "Только 3D",
   "category.tntimer": "Таймер ТНТ",
-  "key.tntimer.config": "Открыть настройки TNTimer"
+  "key.tntimer.config": "Открыть настройки TNTimer",
+  "tntimer.config.category": "Настройки TNTimer",
+  "tntimer.config.enable": "Включить таймер TNT",
+  "tntimer.config.enable.tooltip": "Включить или отключить таймер обратного отсчета TNT",
+  "tntimer.config.max_tnt_display": "Макс. отображение TNT",
+  "tntimer.config.max_tnt_display.tooltip": "Максимальное количество сущностей TNT для одновременного отображения",
+  "tntimer.config.position_label": "Позиция",
+  "tntimer.config.position_label.tooltip": "Положение на экране для таймера TNT",
+  "tntimer.config.show_hud_background": "Показать фон HUD",
+  "tntimer.config.show_hud_background.tooltip": "Показать полупрозрачный фон за текстом HUD",
+  "tntimer.config.display_mode_label": "Режим отображения",
+  "tntimer.config.display_mode_label.tooltip": "Выберите, где отображать таймер: только HUD, только 3D или оба"
 }

@@ -24,6 +24,20 @@
   "tntimer.position.top_center": "Oben Mitte",
   "tntimer.position.bottom_center": "Unten Mitte (Über der Leiste)",
   "tntimer.position.under_cursor": "Unter dem Cursor",
+  "tntimer.displaymode.both": "Beides (HUD + 3D)",
+  "tntimer.displaymode.hud_only": "Nur HUD",
+  "tntimer.displaymode.3d_only": "Nur 3D",
   "category.tntimer": "TNT-Timer",
-  "key.tntimer.config": "TNTimer-Konfiguration öffnen"
+  "key.tntimer.config": "TNTimer-Konfiguration öffnen",
+  "tntimer.config.category": "TNTimer Einstellungen",
+  "tntimer.config.enable": "TNT-Timer aktivieren",
+  "tntimer.config.enable.tooltip": "TNT-Countdown-Timer aktivieren oder deaktivieren",
+  "tntimer.config.max_tnt_display": "Max. TNT-Anzeige",
+  "tntimer.config.max_tnt_display.tooltip": "Maximale Anzahl der gleichzeitig anzuzeigenden TNT-Entitäten",
+  "tntimer.config.position_label": "Position",
+  "tntimer.config.position_label.tooltip": "Bildschirmposition für den TNT-Timer",
+  "tntimer.config.show_hud_background": "HUD-Hintergrund anzeigen",
+  "tntimer.config.show_hud_background.tooltip": "Einen halbtransparenten Hintergrund hinter dem HUD-Text anzeigen",
+  "tntimer.config.display_mode_label": "Anzeigemodus",
+  "tntimer.config.display_mode_label.tooltip": "Wählen Sie, wo der Timer angezeigt werden soll: nur HUD, nur 3D oder beides"
 }

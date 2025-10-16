@@ -11,7 +11,7 @@ public class TNTimerClothConfigScreen {
     public static Screen create(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Component.literal("TNTimer Settings"));
+                .setTitle(Component.translatable("tntimer.config.title"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
@@ -19,55 +19,48 @@ public class TNTimerClothConfigScreen {
         TNTimerConfig config = TNTimerConfig.getInstance();
 
         // Single Settings Category - everything in one tab
-        ConfigCategory settings = builder.getOrCreateCategory(Component.literal("TNTimer Settings"));
+        ConfigCategory settings = builder.getOrCreateCategory(Component.translatable("tntimer.config.category"));
 
         // Enable/Disable
         settings.addEntry(entryBuilder
-                .startBooleanToggle(Component.literal("Enable TNT Timer"), config.enabled)
+                .startBooleanToggle(Component.translatable("tntimer.config.enable"), config.enabled)
                 .setDefaultValue(true)
-                .setTooltip(Component.literal("Enable or disable the TNT countdown timer"))
+                .setTooltip(Component.translatable("tntimer.config.enable.tooltip"))
                 .setSaveConsumer(newValue -> config.enabled = newValue)
                 .build());
 
         // Max TNT Display
         settings.addEntry(entryBuilder
-                .startIntSlider(Component.literal("Max TNT Display"), config.maxTntDisplay, 1, 10)
+                .startIntSlider(Component.translatable("tntimer.config.max_tnt_display"), config.maxTntDisplay, 1, 10)
                 .setDefaultValue(5)
-                .setTooltip(Component.literal("Maximum number of TNT entities to display at once"))
+                .setTooltip(Component.translatable("tntimer.config.max_tnt_display.tooltip"))
                 .setSaveConsumer(newValue -> config.maxTntDisplay = newValue)
                 .build());
 
         // Position
         settings.addEntry(entryBuilder
-                .startEnumSelector(Component.literal("Position"), TNTimerConfig.Position.class, config.position)
+                .startEnumSelector(Component.translatable("tntimer.config.position_label"), TNTimerConfig.Position.class, config.position)
                 .setDefaultValue(TNTimerConfig.Position.TOP_LEFT)
-                .setTooltip(Component.literal("Screen position for the TNT timer"))
+                .setTooltip(Component.translatable("tntimer.config.position_label.tooltip"))
                 .setEnumNameProvider(value -> ((TNTimerConfig.Position) value).getDisplayName())
                 .setSaveConsumer(newValue -> config.position = newValue)
                 .build());
 
-        // Show Only Seconds
-        settings.addEntry(entryBuilder
-                .startBooleanToggle(Component.literal("Show Only Seconds"), config.showOnlySeconds)
-                .setDefaultValue(false)
-                .setTooltip(Component.literal("Show only seconds (e.g. '2.5s') instead of full text"))
-                .setSaveConsumer(newValue -> config.showOnlySeconds = newValue)
-                .build());
-
         // Show Background
         settings.addEntry(entryBuilder
-                .startBooleanToggle(Component.literal("Show Background"), config.showBackground)
+                .startBooleanToggle(Component.translatable("tntimer.config.show_hud_background"), config.showBackground)
                 .setDefaultValue(false)
-                .setTooltip(Component.literal("Show a semi-transparent background behind the text"))
+                .setTooltip(Component.translatable("tntimer.config.show_hud_background.tooltip"))
                 .setSaveConsumer(newValue -> config.showBackground = newValue)
                 .build());
 
-        // Enable 3D Timer
+        // Display Mode
         settings.addEntry(entryBuilder
-                .startBooleanToggle(Component.literal("Enable 3D Timer"), config.enable3DTimer)
-                .setDefaultValue(true)
-                .setTooltip(Component.literal("Show timer above TNT entities in 3D world (like nametags)"))
-                .setSaveConsumer(newValue -> config.enable3DTimer = newValue)
+                .startEnumSelector(Component.translatable("tntimer.config.display_mode_label"), TNTimerConfig.DisplayMode.class, config.displayMode)
+                .setDefaultValue(TNTimerConfig.DisplayMode.BOTH)
+                .setTooltip(Component.translatable("tntimer.config.display_mode_label.tooltip"))
+                .setEnumNameProvider(value -> ((TNTimerConfig.DisplayMode) value).getDisplayName())
+                .setSaveConsumer(newValue -> config.displayMode = newValue)
                 .build());
 
         // Separator

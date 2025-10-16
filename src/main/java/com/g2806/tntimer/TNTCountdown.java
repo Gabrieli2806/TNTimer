@@ -58,7 +58,8 @@ public class TNTCountdown implements ClientModInitializer {
 
             // Get configuration
             TNTimerConfig config = TNTimerConfig.getInstance();
-            if (!config.enabled) return;
+            boolean shouldHUDRender = config.enabled && (config.displayMode == TNTimerConfig.DisplayMode.BOTH || config.displayMode == TNTimerConfig.DisplayMode.HUD_ONLY);
+            if (!shouldHUDRender) return;
 
             // Collect TNT entities
             List<PrimedTnt> tntEntities = new ArrayList<>();
@@ -84,12 +85,8 @@ public class TNTCountdown implements ClientModInitializer {
                 double seconds = fuse / 20.0;
                 String formattedSeconds = String.format("%.1f", seconds).replace(',', '.');
 
-                String timeLeft;
-                if (config.showOnlySeconds) {
-                    timeLeft = formattedSeconds + "s";
-                } else {
-                    timeLeft = "TNT: " + formattedSeconds + "s";
-                }
+                // Always show only seconds
+                String timeLeft = formattedSeconds + "s";
 
                 // Color based on time remaining
                 int color = 0xFFFFFFFF; // Default white

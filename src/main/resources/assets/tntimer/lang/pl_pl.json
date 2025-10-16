@@ -24,6 +24,20 @@
   "tntimer.position.top_center": "Góra Środek",
   "tntimer.position.bottom_center": "Dół Środek (Nad Paskiem)",
   "tntimer.position.under_cursor": "Pod Kursorem",
+  "tntimer.displaymode.both": "Oba (HUD + 3D)",
+  "tntimer.displaymode.hud_only": "Tylko HUD",
+  "tntimer.displaymode.3d_only": "Tylko 3D",
   "category.tntimer": "Licznik TNT",
-  "key.tntimer.config": "Otwórz konfigurację TNTimer"
+  "key.tntimer.config": "Otwórz konfigurację TNTimer",
+  "tntimer.config.category": "Ustawienia TNTimer",
+  "tntimer.config.enable": "Włącz licznik TNT",
+  "tntimer.config.enable.tooltip": "Włącz lub wyłącz licznik odliczania TNT",
+  "tntimer.config.max_tnt_display": "Maks. wyświetlanie TNT",
+  "tntimer.config.max_tnt_display.tooltip": "Maksymalna liczba jednostek TNT do wyświetlenia jednocześnie",
+  "tntimer.config.position_label": "Pozycja",
+  "tntimer.config.position_label.tooltip": "Pozycja ekranu dla licznika TNT",
+  "tntimer.config.show_hud_background": "Pokaż tło HUD",
+  "tntimer.config.show_hud_background.tooltip": "Pokaż półprzezroczyste tło za tekstem HUD",
+  "tntimer.config.display_mode_label": "Tryb wyświetlania",
+  "tntimer.config.display_mode_label.tooltip": "Wybierz, gdzie wyświetlać licznik: tylko HUD, tylko 3D lub oba"
 }

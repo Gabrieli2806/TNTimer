@@ -24,6 +24,20 @@
   "tntimer.position.top_center": "上中央",
   "tntimer.position.bottom_center": "下中央（ホットバーの上）",
   "tntimer.position.under_cursor": "カーソルの下",
+  "tntimer.displaymode.both": "両方（HUD + 3D）",
+  "tntimer.displaymode.hud_only": "HUDのみ",
+  "tntimer.displaymode.3d_only": "3Dのみ",
   "category.tntimer": "TNTタイマー",
-  "key.tntimer.config": "TNTimer設定を開く"
+  "key.tntimer.config": "TNTimer設定を開く",
+  "tntimer.config.category": "TNTimer設定",
+  "tntimer.config.enable": "TNTタイマーを有効化",
+  "tntimer.config.enable.tooltip": "TNTカウントダウンタイマーを有効または無効にする",
+  "tntimer.config.max_tnt_display": "最大TNT表示",
+  "tntimer.config.max_tnt_display.tooltip": "一度に表示するTNTエンティティの最大数",
+  "tntimer.config.position_label": "位置",
+  "tntimer.config.position_label.tooltip": "TNTタイマーの画面位置",
+  "tntimer.config.show_hud_background": "HUD背景を表示",
+  "tntimer.config.show_hud_background.tooltip": "HUDテキストの背後に半透明の背景を表示",
+  "tntimer.config.display_mode_label": "表示モード",
+  "tntimer.config.display_mode_label.tooltip": "タイマーを表示する場所を選択：HUDのみ、3Dのみ、または両方"
 }

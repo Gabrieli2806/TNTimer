@@ -24,6 +24,20 @@
   "tntimer.position.top_center": "上中",
   "tntimer.position.bottom_center": "下中（快捷栏上方）",
   "tntimer.position.under_cursor": "光标下方",
+  "tntimer.displaymode.both": "两者（HUD + 3D）",
+  "tntimer.displaymode.hud_only": "仅HUD",
+  "tntimer.displaymode.3d_only": "仅3D",
   "category.tntimer": "TNT计时器",
-  "key.tntimer.config": "打开TNTimer配置"
+  "key.tntimer.config": "打开TNTimer配置",
+  "tntimer.config.category": "TNTimer设置",
+  "tntimer.config.enable": "启用TNT计时器",
+  "tntimer.config.enable.tooltip": "启用或禁用TNT倒计时计时器",
+  "tntimer.config.max_tnt_display": "最大TNT显示",
+  "tntimer.config.max_tnt_display.tooltip": "同时显示的TNT实体的最大数量",
+  "tntimer.config.position_label": "位置",
+  "tntimer.config.position_label.tooltip": "TNT计时器的屏幕位置",
+  "tntimer.config.show_hud_background": "显示HUD背景",
+  "tntimer.config.show_hud_background.tooltip": "在HUD文本后显示半透明背景",
+  "tntimer.config.display_mode_label": "显示模式",
+  "tntimer.config.display_mode_label.tooltip": "选择显示计时器的位置：仅HUD、仅3D或两者"
 }

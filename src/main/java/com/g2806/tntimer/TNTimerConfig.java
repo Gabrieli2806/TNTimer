@@ -19,9 +19,32 @@ public class TNTimerConfig {
     public Position position = Position.TOP_LEFT;
     public int maxTntDisplay = 5;
     public boolean enabled = true;
-    public boolean showOnlySeconds = false;
+    public boolean showOnlySeconds = true;
     public boolean showBackground = false;
-    public boolean enable3DTimer = true;
+    public DisplayMode displayMode = DisplayMode.BOTH;
+    public boolean show3DBackground = false;
+
+    // Enum for display mode
+    public enum DisplayMode {
+        BOTH("tntimer.displaymode.both"),
+        HUD_ONLY("tntimer.displaymode.hud_only"),
+        TIMER_3D_ONLY("tntimer.displaymode.3d_only");
+
+        private final String translationKey;
+
+        DisplayMode(String translationKey) {
+            this.translationKey = translationKey;
+        }
+
+        public Component getDisplayName() {
+            return Component.translatable(translationKey);
+        }
+
+        @Override
+        public String toString() {
+            return Component.translatable(translationKey).getString();
+        }
+    }
 
     // Enum for screen positions
     public enum Position {
