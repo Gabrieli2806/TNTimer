@@ -2,8 +2,8 @@ package com.g2806.tntimer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +21,7 @@ public class TNTimerConfig {
     public boolean enabled = true;
     public boolean showOnlySeconds = false;
     public boolean showBackground = false;
+    public boolean enable3DTimer = true;
 
     // Enum for screen positions
     public enum Position {
@@ -38,13 +39,13 @@ public class TNTimerConfig {
             this.translationKey = translationKey;
         }
 
-        public Text getDisplayName() {
-            return Text.translatable(translationKey);
+        public Component getDisplayName() {
+            return Component.translatable(translationKey);
         }
 
         @Override
         public String toString() {
-            return Text.translatable(translationKey).getString();
+            return Component.translatable(translationKey).getString();
         }
     }
 
@@ -58,7 +59,7 @@ public class TNTimerConfig {
 
     // Load configuration from file
     public static TNTimerConfig load() {
-        File configFile = new File(MinecraftClient.getInstance().runDirectory, "config/tntimer.json");
+        File configFile = new File(Minecraft.getInstance().gameDirectory, "config/tntimer.json");
         Gson gson = new Gson();
         TNTimerConfig config = new TNTimerConfig();
 
@@ -78,7 +79,7 @@ public class TNTimerConfig {
 
     // Save configuration to file
     public void save() {
-        File configDir = new File(MinecraftClient.getInstance().runDirectory, "config");
+        File configDir = new File(Minecraft.getInstance().gameDirectory, "config");
         File configFile = new File(configDir, "tntimer.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

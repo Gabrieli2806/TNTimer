@@ -4,13 +4,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.TntEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.item.PrimedTnt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,7 @@ import java.util.List;
 
 public class TNTCountdown implements ClientModInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TNTCountdown.class);
-    private static KeyBinding configKey;
+    private static KeyMapping configKey;
 
     @Override
     public void onInitializeClient() {
@@ -29,8 +27,8 @@ public class TNTCountdown implements ClientModInitializer {
 
         // Register keybinding for configuration - Temporarily disabled due to Category constructor changes
         /*
-        configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                Identifier.of("tntimer", "config").toString(),
+        configKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                ResourceLocation.fromNamespaceAndPath("tntimer", "config").toString(),
                 InputUtil.Type.KEYSYM,
                 InputUtil.GLFW_KEY_K,
                 "category.tntimer"
@@ -46,7 +44,7 @@ public class TNTCountdown implements ClientModInitializer {
                 } catch (Exception e) {
                     LOGGER.error("Failed to open config screen: {}", e.getMessage());
                     if (client.player != null) {
-                        client.player.sendMessage(Text.literal("Config failed: " + e.getMessage()), false);
+                        client.player.sendMessage(Component.literal("Config failed: " + e.getMessage()), false);
                     }
                 }
             }
@@ -54,18 +52,18 @@ public class TNTCountdown implements ClientModInitializer {
         */
 
         // Register HUD element - building on the working debug version
-        HudElementRegistry.addLast(Identifier.of("tntimer", "countdown"), (context, tickCounter) -> {
-            MinecraftClient mc = MinecraftClient.getInstance();
-            if (mc == null || mc.world == null) return;
+        HudElementRegistry.addLast(ResourceLocation.fromNamespaceAndPath("tntimer", "countdown"), (context, tickCounter) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc == null || mc.level == null) return;
 
             // Get configuration
             TNTimerConfig config = TNTimerConfig.getInstance();
             if (!config.enabled) return;
 
             // Collect TNT entities
-            List<TntEntity> tntEntities = new ArrayList<>();
-            for (var entity : mc.world.getEntities()) {
-                if (entity instanceof TntEntity tnt) {
+            List<PrimedTnt> tntEntities = new ArrayList<>();
+            for (var entity : mc.level.entitiesForRendering()) {
+                if (entity instanceof PrimedTnt tnt) {
                     tntEntities.add(tnt);
                 }
             }
@@ -73,15 +71,15 @@ public class TNTCountdown implements ClientModInitializer {
             if (tntEntities.isEmpty()) return;
 
             // Get screen dimensions
-            int screenWidth = mc.getWindow().getScaledWidth();
-            int screenHeight = mc.getWindow().getScaledHeight();
+            int screenWidth = mc.getWindow().getGuiScaledWidth();
+            int screenHeight = mc.getWindow().getGuiScaledHeight();
             int padding = 10;
 
             // Limit the number of TNT entities to display
             int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
 
             for (int i = 0; i < displayCount; i++) {
-                TntEntity tnt = tntEntities.get(i);
+                PrimedTnt tnt = tntEntities.get(i);
                 int fuse = tnt.getFuse();
                 double seconds = fuse / 20.0;
                 String formattedSeconds = String.format("%.1f", seconds).replace(',', '.');
@@ -94,7 +92,7 @@ public class TNTCountdown implements ClientModInitializer {
                 }
 
                 // Color based on time remaining
-                int color = Colors.WHITE; // Default white
+                int color = 0xFFFFFFFF; // Default white
                 if (fuse < 20) {
                     color = 0xFFFF0000; // Red for less than 1 second
                 } else if (fuse < 40) {
@@ -102,8 +100,8 @@ public class TNTCountdown implements ClientModInitializer {
                 }
 
                 // Calculate text dimensions
-                int textWidth = mc.textRenderer.getWidth(timeLeft);
-                int textHeight = mc.textRenderer.fontHeight;
+                int textWidth = mc.font.width(timeLeft);
+                int textHeight = mc.font.lineHeight;
 
                 // Calculate position based on configuration
                 int x, y;
@@ -162,7 +160,7 @@ public class TNTCountdown implements ClientModInitializer {
                 }
 
                 // Draw the countdown text - using the working method
-                context.drawTextWithShadow(mc.textRenderer, timeLeft, x, y, color);
+                context.drawString(mc.font, timeLeft, x, y, color, true);
             }
         });
 

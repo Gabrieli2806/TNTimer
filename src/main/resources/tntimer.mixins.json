@@ -2,6 +2,9 @@
 	"required": true,
 	"package": "com.g2806.tntimer.mixin",
 	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"TntRendererMixin"
+	],
 	"mixins": [
 		"ExampleMixin"
 	],
