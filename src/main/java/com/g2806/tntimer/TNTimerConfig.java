@@ -17,10 +17,10 @@ public class TNTimerConfig {
     private static TNTimerConfig instance;
 
     public boolean enabled = true;
-    public DisplayMode displayMode = DisplayMode.HUD;
+    public DisplayMode displayMode = DisplayMode.WORLD;
     public Position position = Position.TOP_LEFT;
     public int maxTntDisplay = 5;
-    public boolean showOnlySeconds = false;
+    public boolean showOnlySeconds = true;
     public boolean showBackground = false;
 
     // Display mode: HUD overlay or 3D world nametag
