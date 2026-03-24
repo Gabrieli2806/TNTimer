@@ -6,6 +6,6 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 public class TNTCountdownModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return TNTimerClothConfigScreen::create;
+        return TNTimerConfigScreen::create;
     }
 }

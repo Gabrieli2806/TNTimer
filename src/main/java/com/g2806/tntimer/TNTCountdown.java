@@ -1,16 +1,10 @@
 package com.g2806.tntimer;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.TntEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.item.PrimedTnt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,154 +13,120 @@ import java.util.List;
 
 public class TNTCountdown implements ClientModInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TNTCountdown.class);
-    private static KeyBinding configKey;
+    private static final int PADDING = 10;
+    private static final int LINE_SPACING = 5;
 
     @Override
     public void onInitializeClient() {
-        // Initialize configuration
         TNTimerConfig.getInstance();
         LOGGER.info("TNTCountdown: Configuration loaded!");
 
-        // Register keybinding for configuration - Temporarily disabled due to Category constructor changes
-        /*
-        configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                Identifier.of("tntimer", "config").toString(),
-                InputUtil.Type.KEYSYM,
-                InputUtil.GLFW_KEY_K,
-                "category.tntimer"
-        ));
-        */
+        // Register HUD overlay rendering
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("tntimer", "countdown"), (context, tickCounter) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc == null || mc.level == null) return;
 
-        // Handle config key press - Temporarily disabled
-        /*
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (configKey.wasPressed()) {
-                try {
-                    client.setScreen(TNTimerClothConfigScreen.create(client.currentScreen));
-                } catch (Exception e) {
-                    LOGGER.error("Failed to open config screen: {}", e.getMessage());
-                    if (client.player != null) {
-                        client.player.sendMessage(Text.literal("Config failed: " + e.getMessage()), false);
-                    }
-                }
-            }
-        });
-        */
-
-        // Register HUD element - building on the working debug version
-        HudElementRegistry.addLast(Identifier.of("tntimer", "countdown"), (context, tickCounter) -> {
-            MinecraftClient mc = MinecraftClient.getInstance();
-            if (mc == null || mc.world == null) return;
-
-            // Get configuration
             TNTimerConfig config = TNTimerConfig.getInstance();
-            if (!config.enabled) return;
+            if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-            // Collect TNT entities
-            List<TntEntity> tntEntities = new ArrayList<>();
-            for (var entity : mc.world.getEntities()) {
-                if (entity instanceof TntEntity tnt) {
-                    tntEntities.add(tnt);
-                }
-            }
-
+            List<PrimedTnt> tntEntities = collectTntEntities(mc);
             if (tntEntities.isEmpty()) return;
 
-            // Get screen dimensions
-            int screenWidth = mc.getWindow().getScaledWidth();
-            int screenHeight = mc.getWindow().getScaledHeight();
-            int padding = 10;
-
-            // Limit the number of TNT entities to display
+            int screenWidth = mc.getWindow().getGuiScaledWidth();
+            int screenHeight = mc.getWindow().getGuiScaledHeight();
+            int textHeight = mc.font.lineHeight;
             int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
 
             for (int i = 0; i < displayCount; i++) {
-                TntEntity tnt = tntEntities.get(i);
+                PrimedTnt tnt = tntEntities.get(i);
                 int fuse = tnt.getFuse();
-                double seconds = fuse / 20.0;
-                String formattedSeconds = String.format("%.1f", seconds).replace(',', '.');
+                String timeLeft = formatFuseTime(fuse, config.showOnlySeconds);
+                int color = getFuseColor(fuse);
+                int textWidth = mc.font.width(timeLeft);
 
-                String timeLeft;
-                if (config.showOnlySeconds) {
-                    timeLeft = formattedSeconds + "s";
-                } else {
-                    timeLeft = "TNT: " + formattedSeconds + "s";
-                }
+                int[] pos = calculatePosition(config.position, i, screenWidth, screenHeight,
+                        textWidth, textHeight, displayCount);
 
-                // Color based on time remaining
-                int color = Colors.WHITE; // Default white
-                if (fuse < 20) {
-                    color = 0xFFFF0000; // Red for less than 1 second
-                } else if (fuse < 40) {
-                    color = 0xFFFF8000; // Orange for less than 2 seconds
-                }
-
-                // Calculate text dimensions
-                int textWidth = mc.textRenderer.getWidth(timeLeft);
-                int textHeight = mc.textRenderer.fontHeight;
-
-                // Calculate position based on configuration
-                int x, y;
-                int bottomY = screenHeight - (textHeight + padding) - i * (textHeight + 5);
-
-                switch (config.position) {
-                    case TOP_LEFT:
-                        x = padding;
-                        y = padding + i * (textHeight + 5);
-                        break;
-                    case TOP_RIGHT:
-                        x = screenWidth - textWidth - padding;
-                        y = padding + i * (textHeight + 5);
-                        break;
-                    case BOTTOM_LEFT:
-                        x = padding;
-                        y = bottomY;
-                        break;
-                    case BOTTOM_RIGHT:
-                        x = screenWidth - textWidth - padding;
-                        y = bottomY;
-                        break;
-                    case TOP_CENTER:
-                        x = screenWidth / 2 - textWidth / 2;
-                        y = padding + i * (textHeight + 5);
-                        break;
-                    case BOTTOM_CENTER:
-                        x = screenWidth / 2 - textWidth / 2;
-                        y = screenHeight - 60 - i * (textHeight + 5);
-                        break;
-                    case UNDER_CURSOR:
-                        x = screenWidth / 2 - textWidth / 2;
-                        y = screenHeight / 2 + 15 + i * (textHeight + 5);
-                        y = Math.min(y, screenHeight - textHeight - 5);
-                        y = Math.max(y, 5);
-                        break;
-                    default:
-                        x = padding;
-                        y = padding + i * (textHeight + 5);
-                        break;
-                }
-
-                // Draw background if enabled
                 if (config.showBackground) {
-                    int backgroundPadding = 2;
-                    int backgroundX = x - backgroundPadding;
-                    int backgroundY = y - backgroundPadding;
-                    int backgroundWidth = textWidth + backgroundPadding * 2;
-                    int backgroundHeight = textHeight + backgroundPadding * 2;
-                    int backgroundColor = 0x80000000; // Semi-transparent black
-
-                    context.fill(backgroundX, backgroundY,
-                            backgroundX + backgroundWidth,
-                            backgroundY + backgroundHeight,
-                            backgroundColor);
+                    int bgPad = 2;
+                    context.fill(pos[0] - bgPad, pos[1] - bgPad,
+                            pos[0] + textWidth + bgPad, pos[1] + textHeight + bgPad,
+                            0x80000000);
                 }
 
-                // Draw the countdown text - using the working method
-                context.drawTextWithShadow(mc.textRenderer, timeLeft, x, y, color);
+                context.text(mc.font, timeLeft, pos[0], pos[1], color);
             }
         });
 
+        // Register 3D world nametag rendering
+        TNTWorldRenderer.register();
+
         LOGGER.info("TNTCountdown: Loaded successfully!");
-        System.out.println("TNTCountdown: Press K to open configuration");
+    }
+
+    private static List<PrimedTnt> collectTntEntities(Minecraft mc) {
+        List<PrimedTnt> list = new ArrayList<>();
+        for (var entity : mc.level.entitiesForRendering()) {
+            if (entity instanceof PrimedTnt tnt) {
+                list.add(tnt);
+            }
+        }
+        return list;
+    }
+
+    static String formatFuseTime(int fuse, boolean onlySeconds) {
+        double seconds = fuse / 20.0;
+        String formatted = String.format("%.1f", seconds).replace(',', '.');
+        return onlySeconds ? formatted + "s" : "TNT: " + formatted + "s";
+    }
+
+    static int getFuseColor(int fuse) {
+        if (fuse < 20) return 0xFFFF0000;      // Red < 1s
+        if (fuse < 40) return 0xFFFF8000;       // Orange < 2s
+        return 0xFFFFFFFF;                       // White
+    }
+
+    private static int[] calculatePosition(TNTimerConfig.Position position, int index,
+                                            int screenWidth, int screenHeight,
+                                            int textWidth, int textHeight, int totalCount) {
+        int lineStep = textHeight + LINE_SPACING;
+        int x, y;
+
+        switch (position) {
+            case TOP_LEFT -> {
+                x = PADDING;
+                y = PADDING + index * lineStep;
+            }
+            case TOP_RIGHT -> {
+                x = screenWidth - textWidth - PADDING;
+                y = PADDING + index * lineStep;
+            }
+            case BOTTOM_LEFT -> {
+                x = PADDING;
+                y = screenHeight - (textHeight + PADDING) - index * lineStep;
+            }
+            case BOTTOM_RIGHT -> {
+                x = screenWidth - textWidth - PADDING;
+                y = screenHeight - (textHeight + PADDING) - index * lineStep;
+            }
+            case TOP_CENTER -> {
+                x = (screenWidth - textWidth) / 2;
+                y = PADDING + index * lineStep;
+            }
+            case BOTTOM_CENTER -> {
+                x = (screenWidth - textWidth) / 2;
+                y = screenHeight - 60 - index * lineStep;
+            }
+            case UNDER_CURSOR -> {
+                x = (screenWidth - textWidth) / 2;
+                y = Math.clamp(screenHeight / 2 + 15 + index * lineStep, 5, screenHeight - textHeight - 5);
+            }
+            default -> {
+                x = PADDING;
+                y = PADDING + index * lineStep;
+            }
+        }
+
+        return new int[]{x, y};
     }
 }

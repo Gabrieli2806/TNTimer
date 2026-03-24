@@ -1,0 +1,28 @@
+# Build output
+build/
+out/
+
+# Gradle caches and wrapper downloads
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Game run directory (Minecraft data generated at dev-time)
+run/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Decompiled / extracted sources from jars (investigation artifacts)
+net/
+temp_api/
+
+# Temp files and logs
+temp_*.gradle
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
