@@ -25,5 +25,13 @@
   "tntimer.position.bottom_center": "Нижний Центр (Над Панелью)",
   "tntimer.position.under_cursor": "Под Курсором",
   "category.tntimer": "Таймер ТНТ",
-  "key.tntimer.config": "Открыть настройки TNTimer"
+  "key.tntimer.config": "Открыть настройки TNTimer",
+  "tntimer.display_mode.hud": "HUD",
+  "tntimer.display_mode.world": "Над ТНТ (3D)",
+  "tntimer.config.enabled.title": "Включено",
+  "tntimer.config.display_mode.title": "Режим отображения",
+  "tntimer.config.position.title": "Позиция",
+  "tntimer.config.max_tnt.title": "Макс. Отображаемых ТНТ",
+  "tntimer.config.show_only_seconds.title": "Показывать только секунды",
+  "tntimer.config.show_background.title": "Фон"
 }

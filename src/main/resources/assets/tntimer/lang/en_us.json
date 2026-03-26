@@ -25,5 +25,13 @@
   "tntimer.position.bottom_center": "Bottom Center (Above Hotbar)",
   "tntimer.position.under_cursor": "Under Cursor",
   "category.tntimer": "TNTimer",
-  "key.tntimer.config": "Open TNTimer Config"
+  "key.tntimer.config": "Open TNTimer Config",
+  "tntimer.display_mode.hud": "HUD",
+  "tntimer.display_mode.world": "Above TNT (3D)",
+  "tntimer.config.enabled.title": "Enabled",
+  "tntimer.config.display_mode.title": "Display Mode",
+  "tntimer.config.position.title": "Position",
+  "tntimer.config.max_tnt.title": "Max TNT Display",
+  "tntimer.config.show_only_seconds.title": "Show Only Seconds",
+  "tntimer.config.show_background.title": "Background"
 }

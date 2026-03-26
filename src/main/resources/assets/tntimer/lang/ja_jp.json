@@ -25,5 +25,13 @@
   "tntimer.position.bottom_center": "下中央（ホットバーの上）",
   "tntimer.position.under_cursor": "カーソルの下",
   "category.tntimer": "TNTタイマー",
-  "key.tntimer.config": "TNTimer設定を開く"
+  "key.tntimer.config": "TNTimer設定を開く",
+  "tntimer.display_mode.hud": "HUD",
+  "tntimer.display_mode.world": "TNTの上（3D）",
+  "tntimer.config.enabled.title": "有効化",
+  "tntimer.config.display_mode.title": "表示モード",
+  "tntimer.config.position.title": "位置",
+  "tntimer.config.max_tnt.title": "最大表示TNT数",
+  "tntimer.config.show_only_seconds.title": "秒のみ表示",
+  "tntimer.config.show_background.title": "背景"
 }

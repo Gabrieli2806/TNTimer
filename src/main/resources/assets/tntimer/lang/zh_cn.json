@@ -25,5 +25,13 @@
   "tntimer.position.bottom_center": "下中（快捷栏上方）",
   "tntimer.position.under_cursor": "光标下方",
   "category.tntimer": "TNT计时器",
-  "key.tntimer.config": "打开TNTimer配置"
+  "key.tntimer.config": "打开TNTimer配置",
+  "tntimer.display_mode.hud": "HUD",
+  "tntimer.display_mode.world": "TNT上方（3D）",
+  "tntimer.config.enabled.title": "启用",
+  "tntimer.config.display_mode.title": "显示模式",
+  "tntimer.config.position.title": "位置",
+  "tntimer.config.max_tnt.title": "最大显示TNT数量",
+  "tntimer.config.show_only_seconds.title": "仅显示秒数",
+  "tntimer.config.show_background.title": "背景"
 }
