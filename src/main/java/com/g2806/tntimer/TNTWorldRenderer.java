@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Renders TNT countdown timers as 3D nametag-style text above active TNT entities.
- * Uses MC 26.1's deferred rendering system via {@link OrderedSubmitNodeCollector#submitNameTag}.
+ * Uses MC 26.2's deferred rendering system via the world renderer's nametag submit queue.
  * Labels are submitted during COLLECT_SUBMITS and drawn by the world renderer alongside
  * vanilla entity nametags.
  */
@@ -59,7 +59,7 @@ public class TNTWorldRenderer {
         if (tntEntities.isEmpty()) return;
 
         CameraRenderState cameraState = context.levelState().cameraRenderState;
-        Vec3 cameraPos = mc.gameRenderer.getMainCamera().position();
+        Vec3 cameraPos = mc.gameRenderer.mainCamera().position();
 
         SubmitNodeCollector collector = context.submitNodeCollector();
         PoseStack poseStack = context.poseStack();
@@ -102,8 +102,6 @@ public class TNTWorldRenderer {
         double y = tnt.getY() - cameraPos.y;
         double z = tnt.getZ() - cameraPos.z;
 
-        double squaredDist = x * x + y * y + z * z;
-
         Vec3 nameTagAttachment = new Vec3(0.0, tnt.getBbHeight() + VERTICAL_OFFSET, 0.0);
 
         poseStack.pushPose();
@@ -111,9 +109,9 @@ public class TNTWorldRenderer {
 
         // Parameters match vanilla EntityRenderer.submitNameDisplay:
         // poseStack, nameTagAttachment, yOffset (0), text, visible (true), 
-        // lightCoords (full bright), distanceToCameraSq, cameraState
+        // lightCoords (full bright), cameraState
         collector.submitNameTag(poseStack, nameTagAttachment, 0, labelText, true,
-                LightCoordsUtil.FULL_BRIGHT, squaredDist, cameraState);
+                LightCoordsUtil.FULL_BRIGHT, cameraState);
 
         poseStack.popPose();
     }

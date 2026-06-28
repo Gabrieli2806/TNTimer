@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "tntimer",
-	"version": "${version}",
+	"version": "2.1",
 	"name": "TNTimer",
 	"description": "This Client-Side mod adds a countdown timer that shows exactly when the most recently placed TNT will explode.",
 	"authors": [
@@ -27,13 +27,13 @@
 		"tntimer.mixins.json"
 	],
 	"depends": {
-		"fabricloader": "*",
-		"minecraft": ">=26.1",
+		"fabricloader": ">=0.19.3",
+		"minecraft": ">=26.2",
 		"java": ">=25",
-		"fabric-api": ">=0.144.0"
+		"fabric-api": ">=0.153.0"
 	},
 	"suggests": {
-		"modmenu": ">=18.0.0"
+		"modmenu": ">=20.0.0-beta.4"
 	},
 	"custom": {
 		"modmenu": {
