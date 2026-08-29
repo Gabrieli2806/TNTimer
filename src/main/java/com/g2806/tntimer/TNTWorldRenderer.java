@@ -52,7 +52,7 @@ public class TNTWorldRenderer {
         }
 
         if (debugCounter++ % 100 == 0) {
-            LOGGER.info("TNTWorldRenderer: event fired, TNT count={}, config.enabled={}, displayMode={}",
+            LOGGER.debug("TNTWorldRenderer: event fired, TNT count={}, config.enabled={}, displayMode={}",
                     tntEntities.size(), config.enabled, config.displayMode);
         }
 
