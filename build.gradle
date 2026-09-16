@@ -20,7 +20,7 @@ repositories {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	// No mappings needed - 26.2 is unobfuscated
+	// No mappings needed - 26.x is unobfuscated
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API

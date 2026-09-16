@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Renders TNT countdown timers as 3D nametag-style text above active TNT entities.
- * Uses MC 26.2's deferred rendering system via the world renderer's nametag submit queue.
+ * Uses MC 26.3's deferred rendering system via the world renderer's nametag submit queue.
  * Labels are submitted during COLLECT_SUBMITS and drawn by the world renderer alongside
  * vanilla entity nametags.
  */
@@ -32,10 +32,8 @@ public class TNTWorldRenderer {
 
     public static void register() {
         LevelRenderEvents.COLLECT_SUBMITS.register(TNTWorldRenderer::render);
-        LOGGER.info("TNTWorldRenderer: Registered COLLECT_SUBMITS level render event");
+        LOGGER.debug("TNTWorldRenderer: Registered COLLECT_SUBMITS level render event");
     }
-
-    private static int debugCounter = 0;
 
     private static void render(LevelRenderContext context) {
         Minecraft mc = Minecraft.getInstance();
@@ -49,11 +47,6 @@ public class TNTWorldRenderer {
             if (entity instanceof PrimedTnt tnt) {
                 tntEntities.add(tnt);
             }
-        }
-
-        if (debugCounter++ % 100 == 0) {
-            LOGGER.info("TNTWorldRenderer: event fired, TNT count={}, config.enabled={}, displayMode={}",
-                    tntEntities.size(), config.enabled, config.displayMode);
         }
 
         if (tntEntities.isEmpty()) return;
