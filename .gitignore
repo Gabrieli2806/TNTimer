@@ -26,3 +26,6 @@ temp_*.gradle
 # OS
 .DS_Store
 Thumbs.db
+
+# Eclipse/VSCode java output
+bin/
