@@ -1,0 +1,32 @@
+name: Delete Modrinth versions
+
+# Manually removes broken or duplicate versions from Modrinth.
+# Needs the MODRINTH_TOKEN PAT to have the "Delete versions" scope.
+on:
+  workflow_dispatch:
+    inputs:
+      version_ids:
+        description: Space-separated Modrinth version IDs to delete
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete versions
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          VERSION_IDS: ${{ inputs.version_ids }}
+        run: |
+          status=0
+          for id in $VERSION_IDS; do
+            code=$(curl -s -o /tmp/resp -w '%{http_code}' -X DELETE \
+              -H "Authorization: $MODRINTH_TOKEN" -H "User-Agent: Gabrieli2806/TNTimer" \
+              "https://api.modrinth.com/v2/version/$id")
+            echo "$id -> HTTP $code $(cat /tmp/resp)"
+            [ "$code" = "204" ] || status=1
+          done
+          exit $status
