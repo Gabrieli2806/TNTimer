@@ -9,10 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,16 +39,11 @@ public final class TNTWorldRenderer {
         if (cameraState == null || cameraState.pos == null) return;
         Vec3 cameraPos = cameraState.pos;
 
-        List<PrimedTnt> tntEntities = new ArrayList<>();
-        for (var entity : mc.level.entitiesForRendering()) {
-            if (entity instanceof PrimedTnt tnt) {
-                tntEntities.add(tnt);
-            }
-        }
+        List<Entity> tntEntities = FusedEntities.collect(mc.level);
 
         if (tntEntities.isEmpty()) return;
 
-        tntEntities.sort(Comparator.<PrimedTnt>comparingDouble(
+        tntEntities.sort(Comparator.<Entity>comparingDouble(
                 tnt -> tnt.distanceToSqr(cameraPos)).reversed());
 
         int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
@@ -59,11 +53,11 @@ public final class TNTWorldRenderer {
         }
     }
 
-    private static void submitLabel(PrimedTnt tnt, PoseStack poseStack,
+    private static void submitLabel(Entity tnt, PoseStack poseStack,
                                     SubmitNodeCollector collector,
                                     CameraRenderState cameraState, Vec3 cameraPos,
                                     TNTimerConfig config) {
-        int fuse = tnt.getFuse();
+        int fuse = FusedEntities.fuseOf(tnt);
         double seconds = fuse / 20.0;
         String formattedSeconds = String.format("%.1f", seconds).replace(',', '.');
 

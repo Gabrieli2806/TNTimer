@@ -2,9 +2,8 @@ package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public final class TNTimerHudRenderer {
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-        List<PrimedTnt> tntEntities = collectTntEntities(mc);
+        List<Entity> tntEntities = FusedEntities.collect(mc.level);
         if (tntEntities.isEmpty()) return;
 
         int screenWidth = mc.getWindow().getGuiScaledWidth();
@@ -35,8 +34,7 @@ public final class TNTimerHudRenderer {
         int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
 
         for (int i = 0; i < displayCount; i++) {
-            PrimedTnt tnt = tntEntities.get(i);
-            int fuse = tnt.getFuse();
+            int fuse = FusedEntities.fuseOf(tntEntities.get(i));
             String timeLeft = formatFuseTime(fuse, config.showOnlySeconds);
             int color = getFuseColor(fuse);
             int textWidth = mc.font.width(timeLeft);
@@ -53,16 +51,6 @@ public final class TNTimerHudRenderer {
 
             context.text(mc.font, timeLeft, pos[0], pos[1], color);
         }
-    }
-
-    private static List<PrimedTnt> collectTntEntities(Minecraft mc) {
-        List<PrimedTnt> list = new ArrayList<>();
-        for (var entity : mc.level.entitiesForRendering()) {
-            if (entity instanceof PrimedTnt tnt) {
-                list.add(tnt);
-            }
-        }
-        return list;
     }
 
     static String formatFuseTime(int fuse, boolean onlySeconds) {
