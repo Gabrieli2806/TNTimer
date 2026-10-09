@@ -28,7 +28,7 @@
 * Redstone - Coordinate timed explosions
 
 **Requirements**
-* Minecraft 1.6.4, Java 8
+* Minecraft 1.5.2, Java 8
 * Forge 11.15.1+
 
 Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.

@@ -9,7 +9,6 @@ unimined.minecraft {
 
 	mappings {
 		// Forge before 1.7 ships its own MCP names.
-		searge()
 		forgeBuiltinMCP(project.forge_version.substring(project.minecraft_version.length() + 1))
 	}
 }

@@ -7,6 +7,7 @@ import com.g2806.tntimer.TNTimerKeys;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -18,15 +19,22 @@ import net.minecraftforge.event.ForgeSubscribe;
 import java.util.EnumSet;
 
 /**
- * Forge glue for 1.6. Forge here has no Mixin and no config-button API, so the HUD and 3D
+ * Forge glue for 1.5. Forge here has no Mixin and no config-button API, so the HUD and 3D
  * labels hook Forge's render events and the settings screen opens with the K key.
  */
 @Mod(modid = TNTimer.MOD_ID, useMetadata = true)
 public final class TNTimerForge {
 
-    @Mod.EventHandler
+    private static final String[] LANGUAGES = {
+            "en_US", "de_DE", "es_ES", "es_MX", "fr_FR", "it_IT", "ja_JP", "pl_PL", "ru_RU", "zh_CN"};
+
+    @Mod.PreInit
     public void preInit(FMLPreInitializationEvent event) {
         ForgePlatformHelper.configDirectory = event.getModConfigurationDirectory().toPath();
+        // No resource packs before 1.6: register the translations with FML directly.
+        for (String lang : LANGUAGES) {
+            LanguageRegistry.instance().loadLocalization("/assets/tntimer/lang/" + lang + ".lang", lang, false);
+        }
         TNTimer.init();
         KeyBindingRegistry.registerKeyBinding(new OpenConfigKey());
         MinecraftForge.EVENT_BUS.register(this);

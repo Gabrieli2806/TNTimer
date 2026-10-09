@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.StringTranslate;
 import net.minecraft.util.MathHelper;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         // ---- General ----
         int y = TOP + HEADER_HEIGHT;
         y = addRow(onOff(leftX, y, "enabled", working.enabled, val -> working.enabled = val), y);
-        y = addRow(withTooltip(new CycleButton<>(nextId++, leftX, y, I18n.getString("tntimer.config.display_mode.title"),
+        y = addRow(withTooltip(new CycleButton<>(nextId++, leftX, y, StringTranslate.getInstance().translateKey("tntimer.config.display_mode.title"),
                 TNTimerConfig.DisplayMode.values(), working.displayMode, TNTimerConfig.DisplayMode::getDisplayName,
                 val -> {
                     working.displayMode = val;
@@ -93,7 +93,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         int modeY = rightTop + HEADER_HEIGHT;
 
         int hy = modeY;
-        hy = addRow(track(withTooltip(new CycleButton<>(nextId++, rightX, hy, I18n.getString("tntimer.config.position.title"),
+        hy = addRow(track(withTooltip(new CycleButton<>(nextId++, rightX, hy, StringTranslate.getInstance().translateKey("tntimer.config.position.title"),
                 TNTimerConfig.Position.values(), working.position, TNTimerConfig.Position::getDisplayName,
                 val -> working.position = val), "position")), hy);
         hy = addRow(track(onOff(rightX, hy, "show_background", working.showBackground,
@@ -113,12 +113,12 @@ public class TNTimerConfigScreen extends GuiScreen {
         int buttonWidth = (totalWidth - 2 * gap) / 3;
 
         GuiButton reset = new GuiButton(ID_RESET, leftX, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.getString("tntimer.config.reset"));
+                StringTranslate.getInstance().translateKey("tntimer.config.reset"));
         buttonList.add(withTooltip(reset, "reset"));
         buttonList.add(new GuiButton(ID_CANCEL, leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.getString("gui.cancel")));
+                StringTranslate.getInstance().translateKey("gui.cancel")));
         buttonList.add(new GuiButton(ID_DONE, leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.getString("gui.done")));
+                StringTranslate.getInstance().translateKey("gui.done")));
 
         updateModeWidgets();
     }
@@ -134,19 +134,19 @@ public class TNTimerConfigScreen extends GuiScreen {
     }
 
     private CycleButton<Boolean> onOff(int x, int y, String key, boolean initial, Consumer<Boolean> setter) {
-        return withTooltip(new CycleButton<>(nextId++, x, y, I18n.getString("tntimer.config." + key + ".title"),
+        return withTooltip(new CycleButton<>(nextId++, x, y, StringTranslate.getInstance().translateKey("tntimer.config." + key + ".title"),
                 new Boolean[]{true, false}, initial,
-                value -> I18n.getString(value ? "options.on" : "options.off"), setter), key);
+                value -> StringTranslate.getInstance().translateKey(value ? "options.on" : "options.off"), setter), key);
     }
 
     private IntSlider slider(int x, int y, String key, int min, int max, int step, int initial,
                              IntFunction<String> formatter, IntConsumer onChange) {
-        return withTooltip(new IntSlider(nextId++, x, y, I18n.getString("tntimer.config." + key + ".title"),
+        return withTooltip(new IntSlider(nextId++, x, y, StringTranslate.getInstance().translateKey("tntimer.config." + key + ".title"),
                 min, max, step, initial, formatter, onChange), key);
     }
 
     private <T extends GuiButton> T withTooltip(T widget, String key) {
-        tooltips.put(widget, I18n.getString("tntimer.config." + key + ".tooltip"));
+        tooltips.put(widget, StringTranslate.getInstance().translateKey("tntimer.config." + key + ".tooltip"));
         return widget;
     }
 
@@ -199,13 +199,13 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        drawCenteredString(this.fontRenderer, I18n.getString("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
-        drawCenteredString(this.fontRenderer, I18n.getString("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
-        drawString(this.fontRenderer, I18n.getString("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
-        drawString(this.fontRenderer, I18n.getString(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
+        drawCenteredString(this.fontRenderer, StringTranslate.getInstance().translateKey("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
+        drawCenteredString(this.fontRenderer, StringTranslate.getInstance().translateKey("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
+        drawString(this.fontRenderer, StringTranslate.getInstance().translateKey("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
+        drawString(this.fontRenderer, StringTranslate.getInstance().translateKey(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
                 rightX, rightTop + 2, HEADER_COLOR);
         if (!hudMode()) {
-            this.fontRenderer.drawSplitString(I18n.getString("tntimer.config.section.world.info"),
+            this.fontRenderer.drawSplitString(StringTranslate.getInstance().translateKey("tntimer.config.section.world.info"),
                     rightX, rightTop + HEADER_HEIGHT + 2, COLUMN_WIDTH, SUBTITLE_COLOR);
         }
 

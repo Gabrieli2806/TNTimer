@@ -1,7 +1,6 @@
 package com.g2806.tntimer.forge;
 
 import com.g2806.tntimer.platform.IPlatformHelper;
-import net.minecraft.launchwrapper.Launch;
 import cpw.mods.fml.common.Loader;
 
 import java.nio.file.Path;
@@ -28,7 +27,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public boolean isDevelopmentEnvironment() {
-        Object deobf = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        return deobf instanceof Boolean && (Boolean) deobf;
+        // No launchwrapper blackboard in 1.5: deobfuscated (MCP) class names only exist in dev.
+        try {
+            Class.forName("net.minecraft.world.World", false, ForgePlatformHelper.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }
