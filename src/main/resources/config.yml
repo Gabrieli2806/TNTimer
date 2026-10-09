@@ -8,9 +8,6 @@ enabled: true
 #   name    - the entity's own name tag (works on every version; one label for everyone)
 mode: auto
 
-# "3.4s" instead of "TNT: 3.4s".
-show-only-seconds: false
-
 # Also time primed sulfur cubes (Minecraft 26.2+; ignored on older servers).
 sulfur-cubes: true
 

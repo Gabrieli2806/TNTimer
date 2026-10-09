@@ -7,7 +7,7 @@ This branch (`plugin`) holds the Paper/Spigot plugin. The client mod lives on th
 
 ## Features
 
-* Countdown above each lit TNT, white, then gold under 2s and red under 1s (same as the mod)
+* Countdown (just the time, e.g. `3.4s`) above each lit TNT, white, then gold under 2s and red under 1s (same as the mod)
 * Primed sulfur cubes (Minecraft 26.2+)
 * Floating text display on 1.19.4+, which never touches the entity's name; players can hide it
   for themselves with `/tntimer toggle`
@@ -40,7 +40,6 @@ Folia isn't supported.
 ```yaml
 enabled: true
 mode: auto            # auto | display | name
-show-only-seconds: false
 sulfur-cubes: true
 display:
   background: true

@@ -12,9 +12,9 @@ final class TimerFormat {
     private TimerFormat() {
     }
 
-    static String format(int fuseTicks, boolean onlySeconds) {
-        String seconds = String.format(Locale.ROOT, "%.1fs", Math.max(0, fuseTicks) / (double) TICKS_PER_SECOND);
-        return color(fuseTicks) + (onlySeconds ? seconds : "TNT: " + seconds);
+    /** Just the time, e.g. "3.4s". */
+    static String format(int fuseTicks) {
+        return color(fuseTicks) + String.format(Locale.ROOT, "%.1fs", Math.max(0, fuseTicks) / (double) TICKS_PER_SECOND);
     }
 
     private static ChatColor color(int fuseTicks) {

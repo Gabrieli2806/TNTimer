@@ -74,7 +74,7 @@ public final class TNTimerPlugin extends JavaPlugin implements Listener {
     private void tick() {
         for (World world : Bukkit.getWorlds()) {
             FusedEntities.forEach(world, settings.sulfurCubes, (Entity entity, int fuse) ->
-                    renderer.show(entity, TimerFormat.format(fuse, settings.showOnlySeconds)));
+                    renderer.show(entity, TimerFormat.format(fuse)));
         }
         renderer.endTick();
     }

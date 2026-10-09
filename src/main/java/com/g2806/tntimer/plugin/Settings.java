@@ -9,7 +9,6 @@ final class Settings {
 
     final boolean enabled;
     final Mode mode;
-    final boolean showOnlySeconds;
     final boolean sulfurCubes;
     final boolean background;
     final boolean shadow;
@@ -25,7 +24,6 @@ final class Settings {
             parsed = Mode.AUTO;
         }
         mode = parsed;
-        showOnlySeconds = config.getBoolean("show-only-seconds", false);
         sulfurCubes = config.getBoolean("sulfur-cubes", true);
         background = config.getBoolean("display.background", true);
         shadow = config.getBoolean("display.shadow", true);
