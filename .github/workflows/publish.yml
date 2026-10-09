@@ -71,7 +71,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            forge/build/libs/!(*-sources).jar
+            forge/build/libs/!(*-sources|*-dev).jar
           name: TNTimer ${{ steps.props.outputs.mod_version }} (Forge ${{ steps.props.outputs.minecraft }})
           version: ${{ steps.props.outputs.mod_version }}+${{ steps.props.outputs.minecraft }}-forge
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}

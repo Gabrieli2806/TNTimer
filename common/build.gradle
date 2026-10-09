@@ -1,13 +1,12 @@
 plugins {
-	id 'net.neoforged.moddev.legacyforge' version '2.0.148'
-}
-
-legacyForge {
-	// Vanilla-only (MCP) mode: common compiles against plain Minecraft with Mojang names.
-	mcpVersion = project.minecraft_version
+	// No NeoForm/MCP config for 1.16.5 in ModDevGradle, so common compiles against vanilla
+	// (Mojang names) through Loom instead. Loader modules recompile these sources anyway.
+	id 'fabric-loom' version '1.12.7'
 }
 
 dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
 	// Annotations only; non-transitive so its ASM version can't clash with Minecraft's pinned one.
 	compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}") { transitive = false }
 }

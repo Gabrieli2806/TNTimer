@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -26,6 +25,8 @@ import java.util.List;
 public final class TNTWorldRenderer {
 
     private static final double VERTICAL_OFFSET = 0.5;
+    /** Packed light for full brightness (sky 15, block 15). */
+    private static final int FULL_BRIGHT = 0xF000F0;
     /** Vanilla only draws nametags within 64 blocks; match it. */
     private static final double MAX_DISTANCE_SQR = 64.0 * 64.0;
     private static final float TEXT_SCALE = 0.025F;
@@ -98,9 +99,9 @@ public final class TNTWorldRenderer {
         // Same two passes as a vanilla nametag: faint see-through text with background,
         // then the solid text on top.
         font.drawInBatch(label, x, 0, SEE_THROUGH_COLOR, false, matrix, bufferSource,
-                true, backgroundColor, LightTexture.FULL_BRIGHT);
+                true, backgroundColor, FULL_BRIGHT);
         font.drawInBatch(label, x, 0, -1, false, matrix, bufferSource,
-                false, 0, LightTexture.FULL_BRIGHT);
+                false, 0, FULL_BRIGHT);
 
         poseStack.popPose();
     }

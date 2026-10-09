@@ -15,7 +15,7 @@ public final class TNTimerKeys {
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.tntimer.open_config",
             InputConstants.Type.KEYSYM,
-            InputConstants.KEY_K,
+            75, // GLFW_KEY_K (no InputConstants.KEY_K before 1.17)
             CATEGORY);
 
     private TNTimerKeys() {

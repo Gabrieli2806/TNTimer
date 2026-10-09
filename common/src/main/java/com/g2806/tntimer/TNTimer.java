@@ -3,8 +3,8 @@ package com.g2806.tntimer;
 import com.g2806.tntimer.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Loader-agnostic entry point. Each loader module calls {@link #init()} from its own
@@ -14,7 +14,7 @@ public final class TNTimer {
 
     public static final String MOD_ID = "tntimer";
     public static final String MOD_NAME = "TNTimer";
-    private static final Logger LOGGER = LoggerFactory.getLogger(TNTimer.class);
+    private static final Logger LOGGER = LogManager.getLogger(TNTimer.class);
 
     private TNTimer() {
     }

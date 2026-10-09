@@ -6,7 +6,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -75,15 +74,13 @@ public class TNTimerConfigScreen extends Screen {
         // ---- General ----
         int y = TOP + HEADER_HEIGHT;
         y = addRow(onOff(leftX, y, "enabled", working.enabled, val -> working.enabled = val), y);
-        y = addRow(withTooltip(CycleButton.<TNTimerConfig.DisplayMode>builder(TNTimerConfig.DisplayMode::getDisplayName)
-                .withValues(TNTimerConfig.DisplayMode.values())
-                .withInitialValue(working.displayMode)
-                .create(leftX, y, COLUMN_WIDTH, ROW_HEIGHT,
-                        new TranslatableComponent("tntimer.config.display_mode.title"),
-                        (btn, val) -> {
-                            working.displayMode = val;
-                            updateModeWidgets();
-                        }), "display_mode"), y);
+        y = addRow(withTooltip(new CycleWidget<>(leftX, y, COLUMN_WIDTH, ROW_HEIGHT,
+                new TranslatableComponent("tntimer.config.display_mode.title"),
+                TNTimerConfig.DisplayMode.values(), working.displayMode, TNTimerConfig.DisplayMode::getDisplayName,
+                val -> {
+                    working.displayMode = val;
+                    updateModeWidgets();
+                }), "display_mode"), y);
         y = addRow(slider(leftX, y, "max_tnt", 1, TNTimerConfig.MAX_TNT_DISPLAY, 1,
                 working.maxTntDisplay, String::valueOf, val -> working.maxTntDisplay = val), y);
         y = addRow(onOff(leftX, y, "show_only_seconds", working.showOnlySeconds,
@@ -95,12 +92,10 @@ public class TNTimerConfigScreen extends Screen {
         int modeY = rightTop + HEADER_HEIGHT;
 
         int hy = modeY;
-        hy = addRow(track(hudWidgets, withTooltip(CycleButton.<TNTimerConfig.Position>builder(TNTimerConfig.Position::getDisplayName)
-                .withValues(TNTimerConfig.Position.values())
-                .withInitialValue(working.position)
-                .create(rightX, hy, COLUMN_WIDTH, ROW_HEIGHT,
-                        new TranslatableComponent("tntimer.config.position.title"),
-                        (btn, val) -> working.position = val), "position")), hy);
+        hy = addRow(track(hudWidgets, withTooltip(new CycleWidget<>(rightX, hy, COLUMN_WIDTH, ROW_HEIGHT,
+                new TranslatableComponent("tntimer.config.position.title"),
+                TNTimerConfig.Position.values(), working.position, TNTimerConfig.Position::getDisplayName,
+                val -> working.position = val), "position")), hy);
         hy = addRow(track(hudWidgets, onOff(rightX, hy, "show_background", working.showBackground,
                 val -> working.showBackground = val)), hy);
         hy = addRow(track(hudWidgets, slider(rightX, hy, "hud_scale",
@@ -117,14 +112,14 @@ public class TNTimerConfigScreen extends Screen {
         int gap = 6;
         int buttonWidth = (totalWidth - 2 * gap) / 3;
 
-        addRenderableWidget(withTooltip(new Button(leftX, footerY, buttonWidth, ROW_HEIGHT,
+        addButton(withTooltip(new Button(leftX, footerY, buttonWidth, ROW_HEIGHT,
                 new TranslatableComponent("tntimer.config.reset"), btn -> {
                     working.copyFrom(new TNTimerConfig());
                     init(this.minecraft, this.width, this.height); // rebuild widgets with defaults
                 }), "reset"));
-        addRenderableWidget(new Button(leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
+        addButton(new Button(leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
                 new TranslatableComponent("gui.cancel"), btn -> onClose()));
-        addRenderableWidget(new Button(leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
+        addButton(new Button(leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
                 new TranslatableComponent("gui.done"), btn -> {
                     applyAndSave();
                     onClose();
@@ -134,7 +129,7 @@ public class TNTimerConfigScreen extends Screen {
     }
 
     private int addRow(AbstractWidget widget, int y) {
-        addRenderableWidget(widget);
+        addButton(widget);
         return y + ROW_HEIGHT + ROW_GAP;
     }
 
@@ -143,11 +138,9 @@ public class TNTimerConfigScreen extends Screen {
         return widget;
     }
 
-    private CycleButton<Boolean> onOff(int x, int y, String key, boolean initial, BooleanSetter setter) {
-        return withTooltip(CycleButton.onOffBuilder(initial)
-                .create(x, y, COLUMN_WIDTH, ROW_HEIGHT,
-                        new TranslatableComponent("tntimer.config." + key + ".title"),
-                        (btn, val) -> setter.set(val)), key);
+    private CycleWidget<Boolean> onOff(int x, int y, String key, boolean initial, BooleanSetter setter) {
+        return withTooltip(CycleWidget.onOff(x, y, COLUMN_WIDTH, ROW_HEIGHT,
+                new TranslatableComponent("tntimer.config." + key + ".title"), initial, setter::set), key);
     }
 
     private IntSlider slider(int x, int y, String key, int min, int max, int step, int initial,

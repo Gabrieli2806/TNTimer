@@ -25,7 +25,8 @@ subprojects {
 
 	tasks.withType(JavaCompile).configureEach {
 		it.options.encoding = 'UTF-8'
-		it.options.release = project.java_version as int
+		// Java 8's javac has no --release; the toolchain already pins the version there.
+		if ((project.java_version as int) > 8) it.options.release = project.java_version as int
 	}
 
 	tasks.withType(ProcessResources).configureEach {

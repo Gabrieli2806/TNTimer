@@ -78,22 +78,34 @@ public final class TNTimerHudRenderer {
     }
 
     private static int horizontalPosition(TNTimerConfig.Position position, int screenWidth, int textWidth) {
-        return switch (position) {
-            case TOP_LEFT, BOTTOM_LEFT -> PADDING;
-            case TOP_RIGHT, BOTTOM_RIGHT -> screenWidth - textWidth - PADDING;
-            case TOP_CENTER, BOTTOM_CENTER, UNDER_CURSOR -> (screenWidth - textWidth) / 2;
-        };
+        switch (position) {
+            case TOP_LEFT:
+            case BOTTOM_LEFT:
+                return PADDING;
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+                return screenWidth - textWidth - PADDING;
+            default: // TOP_CENTER, BOTTOM_CENTER, UNDER_CURSOR
+                return (screenWidth - textWidth) / 2;
+        }
     }
 
     private static int verticalPosition(TNTimerConfig.Position position, int index,
                                         int screenHeight, int textHeight) {
         int lineStep = textHeight + LINE_SPACING;
-        return switch (position) {
-            case TOP_LEFT, TOP_RIGHT, TOP_CENTER -> PADDING + index * lineStep;
-            case BOTTOM_LEFT, BOTTOM_RIGHT -> screenHeight - textHeight - PADDING - index * lineStep;
-            case BOTTOM_CENTER -> screenHeight - HOTBAR_CLEARANCE - index * lineStep;
-            case UNDER_CURSOR -> Mth.clamp(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
-                    5, screenHeight - textHeight - 5);
-        };
+        switch (position) {
+            case TOP_LEFT:
+            case TOP_RIGHT:
+            case TOP_CENTER:
+                return PADDING + index * lineStep;
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                return screenHeight - textHeight - PADDING - index * lineStep;
+            case BOTTOM_CENTER:
+                return screenHeight - HOTBAR_CLEARANCE - index * lineStep;
+            default: // UNDER_CURSOR
+                return Mth.clamp(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
+                        5, screenHeight - textHeight - 5);
+        }
     }
 }

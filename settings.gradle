@@ -5,6 +5,7 @@ pluginManagement {
 		maven { name = 'MinecraftForge'; url = 'https://maven.minecraftforge.net/' }
 		mavenCentral()
 		maven { name = 'Sponge'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
+		maven { name = 'WagYourTail'; url = 'https://maven.wagyourtail.xyz/releases' }
 		gradlePluginPortal()
 	}
 }

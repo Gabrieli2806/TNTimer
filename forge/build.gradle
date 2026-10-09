@@ -1,45 +1,25 @@
 plugins {
-	// Forge 1.20.2 - 1.20.4 runs on SRG names: ForgeGradle 6 reobfuscates the jar, and
-	// MixinGradle generates the refmap so the shared mixins resolve at runtime.
-	id 'net.minecraftforge.gradle' version '6.0.54'
-	id 'org.spongepowered.mixin' version '0.7.38'
+	// ForgeGradle 6 can't set up Forge 1.16.5 and ForgeGradle 5 needs Gradle 7, so this branch
+	// builds the Forge jar with Unimined: Mojang names at compile time, reobfuscated to SRG,
+	// with the mixin refmap generated for the shared mixins.
+	id 'xyz.wagyourtail.unimined' version '1.4.1'
 }
 
-minecraft {
-	mappings channel: 'official', version: project.minecraft_version
+unimined.minecraft {
+	version project.minecraft_version
 
-	runs {
-		client {
-			workingDirectory project.file('run')
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-			args '--mixin.config', "${project.mod_id}.mixins.json"
+	mappings {
+		searge()
+		mojmap()
+	}
 
-			mods {
-				"${project.mod_id}" {
-					source sourceSets.main
-				}
-			}
-		}
+	minecraftForge {
+		loader project.forge_version.substring(project.minecraft_version.length() + 1)
+		mixinConfig "${project.mod_id}.mixins.json"
 	}
 }
 
-// ForgeGradle 6 dev runs load classes and resources as one module; give them one output dir.
-sourceSets.each {
-	def dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
-	it.output.resourcesDir = dir
-	it.java.destinationDirectory = dir
-}
-
-mixin {
-	add sourceSets.main, "${project.mod_id}.refmap.json"
-	config "${project.mod_id}.mixins.json"
-}
-
 dependencies {
-	minecraft "net.minecraftforge:forge:${project.forge_version}"
-	annotationProcessor "org.spongepowered:mixin:${project.forge_mixin_version}:processor"
-
 	compileOnly project(':common')
 }
 
@@ -67,5 +47,4 @@ jar {
 	manifest {
 		attributes['MixinConfigs'] = "${project.mod_id}.mixins.json"
 	}
-	finalizedBy 'reobfJar'
 }

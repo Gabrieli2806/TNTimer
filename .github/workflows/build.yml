@@ -40,4 +40,5 @@ jobs:
             fabric/build/libs/*.jar
             forge/build/libs/*.jar
             !**/*-sources.jar
+            !**/*-dev.jar
           if-no-files-found: error
