@@ -11,10 +11,13 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.renderer.entity.RenderTNTPrimed;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityTNTPrimed;
 
 import java.util.EnumSet;
 
@@ -37,22 +40,50 @@ public final class TNTimerForge {
         }
         TNTimer.init();
         KeyBindingRegistry.registerKeyBinding(new OpenConfigKey());
-        MinecraftForge.EVENT_BUS.register(this);
+        // Forge 1.5's render events can't be subscribed to, so the HUD is drawn at the end of
+        // each render tick and the 3D labels from a wrapper around the primed TNT renderer.
+        TickRegistry.registerTickHandler(new RenderTicks(), Side.CLIENT);
+        RenderingRegistry.registerEntityRenderingHandler(EntityTNTPrimed.class, new TimedTNTRender());
     }
 
-    @ForgeSubscribe
-    public void onOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+    /** Set at the start of every frame; the first primed TNT drawn that frame draws all labels. */
+    private static boolean labelsDrawn;
+
+    private static final class RenderTicks implements ITickHandler {
+        @Override
+        public void tickStart(EnumSet<TickType> type, Object... tickData) {
+            labelsDrawn = false;
+        }
+
+        @Override
+        public void tickEnd(EnumSet<TickType> type, Object... tickData) {
             TNTimerHudRenderer.render();
+        }
+
+        @Override
+        public EnumSet<TickType> ticks() {
+            return EnumSet.of(TickType.RENDER);
+        }
+
+        @Override
+        public String getLabel() {
+            return "TNTimer render";
         }
     }
 
-    @ForgeSubscribe
-    public void onWorldRendered(RenderWorldLastEvent event) {
-        TNTWorldRenderer.render(event.partialTicks);
+    /** Vanilla primed TNT renderer that also draws the countdown labels (camera-relative). */
+    private static final class TimedTNTRender extends RenderTNTPrimed {
+        @Override
+        public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+            renderPrimedTNT((EntityTNTPrimed) entity, x, y, z, yaw, partialTicks);
+            if (!labelsDrawn) {
+                labelsDrawn = true;
+                TNTWorldRenderer.render(partialTicks);
+            }
+        }
     }
 
-    /** FML 1.6 delivers key presses through a key handler instead of polling in a tick event. */
+    /** FML 1.5 delivers key presses through a key handler instead of polling in a tick event. */
     private static final class OpenConfigKey extends KeyBindingRegistry.KeyHandler {
         OpenConfigKey() {
             super(new KeyBinding[]{TNTimerKeys.OPEN_CONFIG}, new boolean[]{false});
