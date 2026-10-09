@@ -1,7 +1,7 @@
 package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.text.TextFormatting;
@@ -23,7 +23,7 @@ public final class TNTWorldRenderer {
     }
 
     public static void render(float partialTicks) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.world == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
@@ -54,7 +54,7 @@ public final class TNTWorldRenderer {
             float y = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks - camY);
             float z = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks - camZ);
 
-            EntityRenderer.drawNameplate(mc.fontRenderer, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
+            GameRenderer.drawNameplate(mc.fontRenderer, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
                     0, rm.playerViewY, rm.playerViewX, thirdPersonFrontal, false);
         }
     }

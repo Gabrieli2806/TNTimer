@@ -3,7 +3,6 @@ package com.g2806.tntimer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -27,7 +26,7 @@ public final class TNTimerHudRenderer {
     }
 
     public static void render() {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.world == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
@@ -43,8 +42,7 @@ public final class TNTimerHudRenderer {
         }
         Arrays.sort(fuses);
 
-        ScaledResolution resolution = new ScaledResolution(mc);
-        drawTimers(mc.fontRenderer, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
+        drawTimers(mc.fontRenderer, fuses, mc.mainWindow.getScaledWidth(), mc.mainWindow.getScaledHeight(), config);
     }
 
     private static void drawTimers(FontRenderer font, int[] fuses, int screenWidth, int screenHeight,
@@ -56,7 +54,7 @@ public final class TNTimerHudRenderer {
         int displayCount = Math.min(fuses.length, config.maxTntDisplay);
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, 1.0F);
+        GlStateManager.scalef(scale, scale, 1.0F);
 
         for (int i = 0; i < displayCount; i++) {
             int fuse = fuses[i];

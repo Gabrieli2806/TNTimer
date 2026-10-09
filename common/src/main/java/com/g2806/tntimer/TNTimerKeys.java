@@ -1,13 +1,13 @@
 package com.g2806.tntimer;
 
 import net.minecraft.client.settings.KeyBinding;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 /** The mod's key bindings; the loader registers them and calls {@link #handlePresses()} each tick. */
 public final class TNTimerKeys {
 
     public static final KeyBinding OPEN_CONFIG = new KeyBinding(
-            "key.tntimer.open_config", Keyboard.KEY_K, "key.category.tntimer.general");
+            "key.tntimer.open_config", GLFW.GLFW_KEY_K, "key.category.tntimer.general");
 
     private TNTimerKeys() {
     }

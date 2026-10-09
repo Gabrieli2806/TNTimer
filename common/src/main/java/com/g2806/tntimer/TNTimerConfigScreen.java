@@ -62,8 +62,7 @@ public class TNTimerConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void initGui() {
-        buttonList.clear();
+    protected void initGui() {
         hudWidgets.clear();
         tooltips.clear();
         nextId = 0;
@@ -112,19 +111,27 @@ public class TNTimerConfigScreen extends GuiScreen {
         int gap = 6;
         int buttonWidth = (totalWidth - 2 * gap) / 3;
 
-        GuiButton reset = new GuiButton(ID_RESET, leftX, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("tntimer.config.reset"));
-        buttonList.add(withTooltip(reset, "reset"));
-        buttonList.add(new GuiButton(ID_CANCEL, leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("gui.cancel")));
-        buttonList.add(new GuiButton(ID_DONE, leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("gui.done")));
+        addButton(withTooltip(new ActionButton(ID_RESET, leftX, footerY, buttonWidth,
+                I18n.format("tntimer.config.reset"), () -> {
+                    working.copyFrom(new TNTimerConfig());
+                    initGui(); // rebuild widgets with defaults
+                }), "reset"));
+        addButton(new ActionButton(ID_CANCEL, leftX + buttonWidth + gap, footerY, buttonWidth,
+                I18n.format("gui.cancel"), this::closeScreen));
+        addButton(new ActionButton(ID_DONE, leftX + (buttonWidth + gap) * 2, footerY, buttonWidth,
+                I18n.format("gui.done"), () -> {
+                    working.sanitize();
+                    TNTimerConfig config = TNTimerConfig.getInstance();
+                    config.copyFrom(working);
+                    config.save();
+                    closeScreen();
+                }));
 
         updateModeWidgets();
     }
 
     private int addRow(GuiButton widget, int y) {
-        buttonList.add(widget);
+        addButton(widget);
         return y + ROW_HEIGHT + ROW_GAP;
     }
 
@@ -161,30 +168,17 @@ public class TNTimerConfigScreen extends GuiScreen {
         }
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button instanceof CycleButton) {
-            ((CycleButton<?>) button).cycle();
-        } else if (button.id == ID_RESET) {
-            working.copyFrom(new TNTimerConfig());
-            initGui();
-        } else if (button.id == ID_CANCEL) {
-            close();
-        } else if (button.id == ID_DONE) {
-            working.sanitize();
-            TNTimerConfig config = TNTimerConfig.getInstance();
-            config.copyFrom(working);
-            config.save();
-            close();
-        }
-    }
-
-    private void close() {
+    private void closeScreen() {
         this.mc.displayGuiScreen(parent);
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void close() {
+        closeScreen(); // Escape returns to the parent screen
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
         int modeBottom = hudMode() ? hudBottom : worldBottom;
@@ -197,7 +191,7 @@ public class TNTimerConfigScreen extends GuiScreen {
             drawPanel(rightX, rightTop, modeBottom);
         }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
 
         drawCenteredString(this.fontRenderer, I18n.format("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
         drawCenteredString(this.fontRenderer, I18n.format("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
@@ -252,7 +246,8 @@ public class TNTimerConfigScreen extends GuiScreen {
             updateText();
         }
 
-        void cycle() {
+        @Override
+        public void onClick(double mouseX, double mouseY) {
             index = (index + 1) % values.length;
             updateText();
             onChange.accept(values[index]);
@@ -260,6 +255,21 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         private void updateText() {
             this.displayString = label + ": " + display.apply(values[index]);
+        }
+    }
+
+    /** Plain button running an action on click (GuiButton is abstract from 1.13). */
+    private static final class ActionButton extends GuiButton {
+        private final Runnable action;
+
+        ActionButton(int id, int x, int y, int width, String text, Runnable action) {
+            super(id, x, y, width, ROW_HEIGHT, text);
+            this.action = action;
+        }
+
+        @Override
+        public void onClick(double mouseX, double mouseY) {
+            action.run();
         }
     }
 
@@ -272,7 +282,6 @@ public class TNTimerConfigScreen extends GuiScreen {
         private final IntFunction<String> formatter;
         private final IntConsumer onChange;
         private float value;
-        private boolean dragging;
 
         IntSlider(int id, int x, int y, String label, int min, int max, int step, int initial,
                   IntFunction<String> formatter, IntConsumer onChange) {
@@ -297,8 +306,8 @@ public class TNTimerConfigScreen extends GuiScreen {
             this.displayString = label + ": " + formatter.apply(currentValue());
         }
 
-        private void setFromMouse(int mouseX) {
-            value = MathHelper.clamp((mouseX - (this.x + 4)) / (float) (this.width - 8), 0.0F, 1.0F);
+        private void setFromMouse(double mouseX) {
+            value = MathHelper.clamp((float) ((mouseX - (this.x + 4)) / (this.width - 8)), 0.0F, 1.0F);
             updateText();
             onChange.accept(currentValue());
         }
@@ -309,28 +318,22 @@ public class TNTimerConfigScreen extends GuiScreen {
         }
 
         @Override
-        protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
+        protected void renderBg(Minecraft mc, int mouseX, int mouseY) {
             if (!this.visible) return;
-            if (dragging) setFromMouse(mouseX);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             int knobX = this.x + (int) (value * (this.width - 8));
             drawTexturedModalRect(knobX, this.y, 0, 66, 4, 20);
             drawTexturedModalRect(knobX + 4, this.y, 196, 66, 4, 20);
         }
 
         @Override
-        public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-            if (super.mousePressed(mc, mouseX, mouseY)) {
-                dragging = true;
-                setFromMouse(mouseX);
-                return true;
-            }
-            return false;
+        public void onClick(double mouseX, double mouseY) {
+            setFromMouse(mouseX);
         }
 
         @Override
-        public void mouseReleased(int mouseX, int mouseY) {
-            dragging = false;
+        protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+            setFromMouse(mouseX);
         }
     }
 }
