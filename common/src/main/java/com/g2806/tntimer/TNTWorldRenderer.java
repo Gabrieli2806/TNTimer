@@ -59,7 +59,7 @@ public final class TNTWorldRenderer {
             float y = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks - camY);
             float z = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks - camZ);
 
-            drawLabel(mc.fontRendererObj, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
+            drawLabel(mc.fontRenderer, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
                     rm.playerViewY, rm.playerViewX, thirdPersonFrontal);
         }
     }

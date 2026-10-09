@@ -198,20 +198,20 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        drawCenteredString(this.fontRendererObj, I18n.format("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
-        drawCenteredString(this.fontRendererObj, I18n.format("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
-        drawString(this.fontRendererObj, I18n.format("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
-        drawString(this.fontRendererObj, I18n.format(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
+        drawCenteredString(this.fontRenderer, I18n.format("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
+        drawCenteredString(this.fontRenderer, I18n.format("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
+        drawString(this.fontRenderer, I18n.format("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
+        drawString(this.fontRenderer, I18n.format(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
                 rightX, rightTop + 2, HEADER_COLOR);
         if (!hudMode()) {
-            this.fontRendererObj.drawSplitString(I18n.format("tntimer.config.section.world.info"),
+            this.fontRenderer.drawSplitString(I18n.format("tntimer.config.section.world.info"),
                     rightX, rightTop + HEADER_HEIGHT + 2, COLUMN_WIDTH, SUBTITLE_COLOR);
         }
 
         for (Map.Entry<GuiButton, String> entry : tooltips.entrySet()) {
             GuiButton widget = entry.getKey();
             if (widget.visible && widget.isMouseOver()) {
-                drawHoveringText(this.fontRendererObj.listFormattedStringToWidth(entry.getValue(), 200), mouseX, mouseY);
+                drawHoveringText(this.fontRenderer.listFormattedStringToWidth(entry.getValue(), 200), mouseX, mouseY);
                 GlStateManager.disableLighting();
                 break;
             }
@@ -297,7 +297,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         }
 
         private void setFromMouse(int mouseX) {
-            value = TimerFormat.clamp((mouseX - (this.xPosition + 4)) / (float) (this.width - 8),  0.0F, 1.0F);
+            value = TimerFormat.clamp((mouseX - (this.x + 4)) / (float) (this.width - 8),  0.0F, 1.0F);
             updateText();
             onChange.accept(currentValue());
         }
@@ -312,9 +312,9 @@ public class TNTimerConfigScreen extends GuiScreen {
             if (!this.visible) return;
             if (dragging) setFromMouse(mouseX);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            int knobX = this.xPosition + (int) (value * (this.width - 8));
-            drawTexturedModalRect(knobX, this.yPosition, 0, 66, 4, 20);
-            drawTexturedModalRect(knobX + 4, this.yPosition, 196, 66, 4, 20);
+            int knobX = this.x + (int) (value * (this.width - 8));
+            drawTexturedModalRect(knobX, this.y, 0, 66, 4, 20);
+            drawTexturedModalRect(knobX + 4, this.y, 196, 66, 4, 20);
         }
 
         @Override
