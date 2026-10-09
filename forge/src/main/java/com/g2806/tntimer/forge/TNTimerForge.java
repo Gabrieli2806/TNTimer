@@ -31,14 +31,14 @@ public final class TNTimerForge {
 
     @SubscribeEvent
     public void onOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             TNTimerHudRenderer.render();
         }
     }
 
     @SubscribeEvent
     public void onWorldRendered(RenderWorldLastEvent event) {
-        TNTWorldRenderer.render(event.getPartialTicks());
+        TNTWorldRenderer.render(event.partialTicks);
     }
 
     @SubscribeEvent

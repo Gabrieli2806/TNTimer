@@ -1,17 +1,22 @@
 package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * Renders TNT countdown timers as nametag-style labels above active TNT, drawn with vanilla's
- * own nameplate routine after the world has rendered.
+ * Renders TNT countdown timers as nametag-style labels above active TNT after the world has
+ * rendered, drawn the same way as vanilla's Render.renderLivingLabel.
  */
 public final class TNTWorldRenderer {
 
@@ -24,18 +29,18 @@ public final class TNTWorldRenderer {
 
     public static void render(float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.world == null || mc.gameSettings.hideGUI) return;
+        if (mc.theWorld == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.WORLD) return;
 
         RenderManager rm = mc.getRenderManager();
-        if (rm.renderViewEntity == null) return;
+        if (mc.getRenderViewEntity() == null) return;
         final double camX = rm.viewerPosX;
         final double camY = rm.viewerPosY;
         final double camZ = rm.viewerPosZ;
 
-        List<Entity> entities = FusedEntities.collect(mc.world);
+        List<Entity> entities = FusedEntities.collect(mc.theWorld);
         entities.removeIf(e -> e.getDistanceSq(camX, camY, camZ) > MAX_DISTANCE_SQR);
         if (entities.isEmpty()) return;
 
@@ -54,16 +59,54 @@ public final class TNTWorldRenderer {
             float y = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks - camY);
             float z = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks - camZ);
 
-            EntityRenderer.drawNameplate(mc.fontRenderer, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
-                    0, rm.playerViewY, rm.playerViewX, thirdPersonFrontal, false);
+            drawLabel(mc.fontRendererObj, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
+                    rm.playerViewY, rm.playerViewX, thirdPersonFrontal);
         }
+    }
+
+    private static void drawLabel(FontRenderer font, String text, float x, float y, float z,
+                                  float viewerYaw, float viewerPitch, boolean thirdPersonFrontal) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((thirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+
+        int halfWidth = font.getStringWidth(text) / 2;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getWorldRenderer();
+        GlStateManager.disableTexture2D();
+        buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos(-halfWidth - 1, -1, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(-halfWidth - 1, 8, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(halfWidth + 1, 8, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(halfWidth + 1, -1, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+
+        // Faint pass visible through blocks, then the solid pass on top, like a vanilla nametag.
+        font.drawString(text, -halfWidth, 0, 0x20FFFFFF);
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        font.drawString(text, -halfWidth, 0, -1);
+
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
     }
 
     /** Nameplates take formatting codes, not RGB: white, gold and red match the HUD colours. */
     private static String colorCode(int fuse) {
         int color = TimerFormat.color(fuse);
-        if (color == TimerFormat.COLOR_DANGER) return TextFormatting.RED.toString();
-        if (color == TimerFormat.COLOR_WARNING) return TextFormatting.GOLD.toString();
-        return TextFormatting.WHITE.toString();
+        if (color == TimerFormat.COLOR_DANGER) return EnumChatFormatting.RED.toString();
+        if (color == TimerFormat.COLOR_WARNING) return EnumChatFormatting.GOLD.toString();
+        return EnumChatFormatting.WHITE.toString();
     }
 }

@@ -30,7 +30,7 @@ public final class FusedEntities {
     /** Remaining fuse in ticks, or {@link #NO_FUSE} if the entity is not about to explode. */
     public static int fuseOf(Entity entity) {
         if (entity instanceof EntityTNTPrimed) {
-            return ((EntityTNTPrimed) entity).getFuse();
+            return ((EntityTNTPrimed) entity).fuse;
         }
         return NO_FUSE;
     }
