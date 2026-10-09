@@ -25,6 +25,7 @@ jobs:
           prop() { grep "^$1=" gradle.properties | cut -d= -f2; }
           echo "mod_version=$(prop mod_version)" >> "$GITHUB_OUTPUT"
           echo "minecraft=$(prop minecraft_version)" >> "$GITHUB_OUTPUT"
+          echo "game_versions=>=$(prop minecraft_version_min) <$(prop minecraft_version_next)" >> "$GITHUB_OUTPUT"
           echo "java=$(prop java_version)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -52,7 +53,7 @@ jobs:
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
           loaders: fabric
-          game-versions: ${{ steps.props.outputs.minecraft }}
+          game-versions: ${{ steps.props.outputs.game_versions }}
           java: ${{ steps.props.outputs.java }}
           dependencies: |
             fabric-api(required)
@@ -73,7 +74,7 @@ jobs:
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
           loaders: neoforge
-          game-versions: ${{ steps.props.outputs.minecraft }}
+          game-versions: ${{ steps.props.outputs.game_versions }}
           java: ${{ steps.props.outputs.java }}
 
       - name: Publish Forge
@@ -91,5 +92,5 @@ jobs:
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
           loaders: forge
-          game-versions: ${{ steps.props.outputs.minecraft }}
+          game-versions: ${{ steps.props.outputs.game_versions }}
           java: ${{ steps.props.outputs.java }}

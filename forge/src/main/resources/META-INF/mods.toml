@@ -23,6 +23,6 @@ displayURL = "https://modrinth.com/mod/tntimer"
 [[dependencies.${mod_id}]]
 	modId = "minecraft"
 	mandatory = true
-	versionRange = "[${minecraft_version},${minecraft_version_next})"
+	versionRange = "[${minecraft_version_min},${minecraft_version_next})"
 	ordering = "NONE"
 	side = "CLIENT"
