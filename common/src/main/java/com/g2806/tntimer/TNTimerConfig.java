@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -124,8 +123,8 @@ public class TNTimerConfig {
         TNTimerConfig defaults = new TNTimerConfig();
         if (displayMode == null) displayMode = defaults.displayMode;
         if (position == null) position = defaults.position;
-        hudScale = MathHelper.clamp_float(hudScale, MIN_HUD_SCALE, MAX_HUD_SCALE);
-        maxTntDisplay = MathHelper.clamp_int(maxTntDisplay, 1, MAX_TNT_DISPLAY);
+        hudScale = TimerFormat.clamp(hudScale, MIN_HUD_SCALE, MAX_HUD_SCALE);
+        maxTntDisplay = TimerFormat.clamp(maxTntDisplay, 1, MAX_TNT_DISPLAY);
     }
 
     public TNTimerConfig copy() {

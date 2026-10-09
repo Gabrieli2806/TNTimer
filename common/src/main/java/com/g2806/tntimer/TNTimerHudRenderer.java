@@ -6,7 +6,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +27,12 @@ public final class TNTimerHudRenderer {
 
     public static void render() {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld == null || mc.gameSettings.hideGUI) return;
+        if (mc.world == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-        List<Entity> entities = FusedEntities.collect(mc.theWorld);
+        List<Entity> entities = FusedEntities.collect(mc.world);
         if (entities.isEmpty()) return;
 
         // Soonest explosion first, so the most urgent timer is always on top.
@@ -105,7 +104,7 @@ public final class TNTimerHudRenderer {
             case BOTTOM_CENTER:
                 return screenHeight - HOTBAR_CLEARANCE - index * lineStep;
             default: // UNDER_CURSOR
-                return MathHelper.clamp_int(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
+                return TimerFormat.clamp(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
                         5, screenHeight - textHeight - 5);
         }
     }

@@ -29,7 +29,7 @@ public final class TNTWorldRenderer {
 
     public static void render(float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld == null || mc.gameSettings.hideGUI) return;
+        if (mc.world == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.WORLD) return;
@@ -40,7 +40,7 @@ public final class TNTWorldRenderer {
         final double camY = rm.viewerPosY;
         final double camZ = rm.viewerPosZ;
 
-        List<Entity> entities = FusedEntities.collect(mc.theWorld);
+        List<Entity> entities = FusedEntities.collect(mc.world);
         entities.removeIf(e -> e.getDistanceSq(camX, camY, camZ) > MAX_DISTANCE_SQR);
         if (entities.isEmpty()) return;
 

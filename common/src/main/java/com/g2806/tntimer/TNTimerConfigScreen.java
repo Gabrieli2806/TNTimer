@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -283,14 +282,14 @@ public class TNTimerConfigScreen extends GuiScreen {
             this.step = step;
             this.formatter = formatter;
             this.onChange = onChange;
-            this.value = (MathHelper.clamp_int(initial, min, max) - min) / (float) (max - min);
+            this.value = (TimerFormat.clamp(initial, min, max) - min) / (float) (max - min);
             updateText();
         }
 
         private int currentValue() {
             int raw = min + Math.round(value * (max - min));
             int snapped = min + Math.round((raw - min) / (float) step) * step;
-            return MathHelper.clamp_int(snapped, min, max);
+            return TimerFormat.clamp(snapped, min, max);
         }
 
         private void updateText() {
@@ -298,7 +297,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         }
 
         private void setFromMouse(int mouseX) {
-            value = MathHelper.clamp_float((mouseX - (this.xPosition + 4)) / (float) (this.width - 8),  0.0F, 1.0F);
+            value = TimerFormat.clamp((mouseX - (this.xPosition + 4)) / (float) (this.width - 8),  0.0F, 1.0F);
             updateText();
             onChange.accept(currentValue());
         }

@@ -26,4 +26,13 @@ public final class TimerFormat {
         if (fuseTicks < 2 * TICKS_PER_SECOND) return COLOR_WARNING;
         return COLOR_SAFE;
     }
+
+    /** Version-independent clamp (MathHelper's clamp methods were renamed across MCP releases). */
+    public static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    public static float clamp(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
 }
