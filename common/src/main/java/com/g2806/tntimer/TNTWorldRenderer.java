@@ -8,7 +8,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,11 +40,18 @@ public final class TNTWorldRenderer {
         final double camZ = rm.viewerPosZ;
 
         List<Entity> entities = FusedEntities.collect(mc.theWorld);
-        entities.removeIf(e -> e.getDistanceSq(camX, camY, camZ) > MAX_DISTANCE_SQR);
+        for (Iterator<Entity> it = entities.iterator(); it.hasNext(); ) {
+            if (it.next().getDistanceSq(camX, camY, camZ) > MAX_DISTANCE_SQR) it.remove();
+        }
         if (entities.isEmpty()) return;
 
         // Closest first, so the max-timers limit keeps the labels that matter most.
-        entities.sort(Comparator.comparingDouble(e -> e.getDistanceSq(camX, camY, camZ)));
+        Collections.sort(entities, new Comparator<Entity>() {
+            @Override
+            public int compare(Entity a, Entity b) {
+                return Double.compare(a.getDistanceSq(camX, camY, camZ), b.getDistanceSq(camX, camY, camZ));
+            }
+        });
 
         boolean thirdPersonFrontal = mc.gameSettings.thirdPersonView == 2;
         int displayCount = Math.min(entities.size(), config.maxTntDisplay);
