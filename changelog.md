@@ -8,7 +8,7 @@
 - Automatic build and Modrinth/CurseForge publishing via GitHub Actions
 
 ### Changed
-- Rebuilt for Minecraft 1.16.5
+- Rebuilt for Minecraft 1.15.2
 - HUD timers sorted by soonest explosion; 3D labels prefer the closest TNT
 - 3D labels follow moving TNT smoothly and hide with F1
 
