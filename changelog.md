@@ -1,3 +1,7 @@
+## [3.0.1] - 2026-10-09
+### Fixed
+- Forge: settings, keybind and display names showed raw translation keys (the mod's resources were missing pack metadata)
+
 ## [3.0.0] - 2026-10-08
 ### Added
 - NeoForge and Forge support (multiloader: Fabric, NeoForge, Forge)
