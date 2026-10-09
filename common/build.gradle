@@ -1,0 +1,12 @@
+plugins {
+	id 'net.neoforged.moddev' version '2.0.148'
+}
+
+neoForge {
+	// Vanilla-only (NeoForm) mode: common compiles against plain Minecraft.
+	neoFormVersion = project.neoform_version
+}
+
+dependencies {
+	compileOnly "net.fabricmc:sponge-mixin:${project.mixin_version}"
+}

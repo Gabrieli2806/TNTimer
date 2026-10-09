@@ -9,28 +9,42 @@
 **Features**
 
 *Dual Display Modes*
-* HUD Timer - On-screen display with customizable positioning (7 locations: top-left, top-right, bottom-left, bottom-right, top-center, bottom-center, under cursor)
-* 3D World Timer - Floating countdown directly above TNT entities (new in v2.0!)
+* HUD Timer - On-screen list with 7 positions (top-left, top-right, bottom-left, bottom-right, top-center, bottom-center, under cursor) and adjustable text scale
+* 3D World Timer - Floating countdown directly above each TNT
 
 *Visual Info*
-* Color-coded warnings - White (>2s), orange (<2s), red (<1s) for instant visual feedback
+* Color-coded warnings - White (2s or more), orange (under 2s), red (under 1s)
 * Clean, minimal design - Shows precise time in "3.5s" format
-* Optional HUD background - Toggle semi-transparent background for better readability
-* Bright 3D colors - Enhanced visibility for world-space timers
+* Optional HUD background for better readability
+* Sulfur cubes - Also tracks primed sulfur cubes carrying TNT (26.x)
 
 *Customization*
-* Multiple TNT tracking - Display up to 10 TNT countdowns simultaneously (configurable 1-10)
-* Easy configuration - Access settings through Mod Menu or keybind (default: 'K')
-* 18 language translations - Full localization support for global players
+* Track up to 20 timers at once; the most urgent (HUD) or closest (3D) are shown first
+* Settings screen with tooltips, via Mod Menu (Fabric) or the keybind (default: `K`)
+* Translated into English, Spanish, German, French, Italian, Japanese, Polish, Russian and Chinese
 
 *Made For*
 * Minigames - Time TNT jumps perfectly in Bedwars, SkyWars, etc
 * Parkour - TNT jumps
 * Redstone - Coordinate timed explosions
 
-**Dependencies:**
-* Fabric API (required)
-* Cloth Config (optional, for config screen)
-* Mod Menu (optional, for in-game config access)
+**Requirements**
+* Minecraft 26.2, Java 25
+* Fabric (Loader 0.19.5+, Fabric API; Mod Menu optional), NeoForge 26.2 or Forge 65+
 
 Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.
+
+**Configuration**
+
+Saved in `config/tntimer.json` (edit in-game with `K` or the mod list):
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `enabled` | `true` | Turn all timers on or off |
+| `displayMode` | `WORLD` | `HUD` (on-screen list) or `WORLD` (label above each TNT) |
+| `maxTntDisplay` | `5` | Timers shown at once (1-20) |
+| `showOnlySeconds` | `true` | `3.4s` instead of `TNT: 3.4s` |
+| `showSulfurCubes` | `true` | Also time primed sulfur cubes carrying TNT |
+| `position` | `TOP_LEFT` | HUD anchor (7 positions) |
+| `showBackground` | `false` | Dark box behind HUD timers |
+| `hudScale` | `1.0` | HUD text scale (0.5-3.0) |
