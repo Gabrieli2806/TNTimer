@@ -1,6 +1,6 @@
 package com.g2806.tntimer;
 
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.MultiPlayerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.PrimedTnt;
 
@@ -17,7 +17,7 @@ public final class FusedEntities {
     }
 
     /** All entities currently counting down, in no particular order. */
-    public static List<Entity> collect(ClientLevel level) {
+    public static List<Entity> collect(MultiPlayerLevel level) {
         List<Entity> list = new ArrayList<>();
         for (Entity entity : level.entitiesForRendering()) {
             if (fuseOf(entity) != NO_FUSE) {

@@ -3,7 +3,7 @@ package com.g2806.tntimer;
 import net.minecraft.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.entity.Entity;
 
@@ -42,8 +42,8 @@ public final class TNTimerHudRenderer {
         int[] fuses = entities.stream().mapToInt(FusedEntities::fuseOf).toArray();
         Arrays.sort(fuses);
 
-        drawTimers(mc.font, fuses, mc.getWindow().getGuiScaledWidth(),
-                mc.getWindow().getGuiScaledHeight(), config);
+        drawTimers(mc.font, fuses, mc.window.getGuiScaledWidth(),
+                mc.window.getGuiScaledHeight(), config);
     }
 
     private static void drawTimers(Font font, int[] fuses,
@@ -54,8 +54,8 @@ public final class TNTimerHudRenderer {
         int textHeight = font.lineHeight;
         int displayCount = Math.min(fuses.length, config.maxTntDisplay);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(scale, scale, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(scale, scale, 1.0F);
 
         for (int i = 0; i < displayCount; i++) {
             int fuse = fuses[i];
@@ -74,7 +74,7 @@ public final class TNTimerHudRenderer {
             font.drawShadow(text, x, y, TimerFormat.color(fuse));
         }
 
-        RenderSystem.popMatrix();
+        GlStateManager.popMatrix();
     }
 
     private static int horizontalPosition(TNTimerConfig.Position position, int screenWidth, int textWidth) {

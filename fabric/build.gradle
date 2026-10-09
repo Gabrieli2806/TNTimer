@@ -8,7 +8,7 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
 
 	compileOnly project(':common')
 }
