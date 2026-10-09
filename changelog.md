@@ -1,3 +1,7 @@
+## [3.0.1] - 2026-10-09
+### Fixed
+- Translations not loading (language files must be named like en_US.lang before 1.11)
+
 ## [3.0.0] - 2026-10-09
 ### Added
 - 3D display mode: the timer floats above each TNT, like a nametag
