@@ -1,7 +1,6 @@
 plugins {
-	// ForgeGradle 6 can't set up Forge 1.16.5 and ForgeGradle 5 needs Gradle 7, so this branch
-	// builds the Forge jar with Unimined: Mojang names at compile time, reobfuscated to SRG,
-	// with the mixin refmap generated for the shared mixins.
+	// ForgeGradle 6 can't set up Forge 1.15.2 and ForgeGradle 3 needs Gradle 4, so this branch
+	// builds the Forge jar with Unimined: Mojang names at compile time, reobfuscated to SRG.
 	id 'xyz.wagyourtail.unimined' version '1.4.1'
 }
 
@@ -15,7 +14,6 @@ unimined.minecraft {
 
 	minecraftForge {
 		loader project.forge_version.substring(project.minecraft_version.length() + 1)
-		mixinConfig "${project.mod_id}.mixins.json"
 	}
 }
 
@@ -24,27 +22,18 @@ dependencies {
 }
 
 // MultiLoader-Template pattern: compile common's sources into this loader's jar.
+// Forge 1.15 ships no Mixin, so the shared mixins are left out and Forge events are used instead.
 tasks.named('compileJava', JavaCompile) {
-	source(project(':common').sourceSets.main.allJava)
+	source(project(':common').sourceSets.main.allJava.matching { exclude 'com/g2806/tntimer/mixin/**' })
 }
 
 tasks.named('processResources', ProcessResources) {
 	from(project(':common').sourceSets.main.resources) {
-		// Only Forge needs a refmap (SRG at runtime), so only its copy of the shared
-		// mixin config points at one.
-		filesMatching("${project.mod_id}.mixins.json") {
-			filter { line -> line.replace('"package":', "\"refmap\": \"${project.mod_id}.refmap.json\",\n\t\"package\":") }
-		}
+		exclude "${project.mod_id}.mixins.json"
 	}
 }
 
 tasks.named('sourcesJar', Jar) {
 	from project(':common').sourceSets.main.allSource
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-jar {
-	manifest {
-		attributes['MixinConfigs'] = "${project.mod_id}.mixins.json"
-	}
 }

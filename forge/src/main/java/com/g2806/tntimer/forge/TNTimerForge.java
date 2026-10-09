@@ -1,9 +1,14 @@
 package com.g2806.tntimer.forge;
 
+import com.g2806.tntimer.TNTWorldRenderer;
 import com.g2806.tntimer.TNTimer;
+import com.g2806.tntimer.TNTimerHudRenderer;
 import com.g2806.tntimer.TNTimerKeys;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -31,6 +36,18 @@ public final class TNTimerForge {
 
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
             if (event.phase == TickEvent.Phase.END) TNTimerKeys.handlePresses();
+        });
+
+        // Forge 1.15 has no Mixin: draw the HUD and the 3D label from Forge's own events.
+        MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post event) -> {
+            if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) TNTimerHudRenderer.render();
+        });
+        MinecraftForge.EVENT_BUS.addListener((RenderNameplateEvent event) -> {
+            String label = TNTWorldRenderer.labelFor(event.getEntity());
+            if (label != null) {
+                event.setContent(label);
+                event.setResult(Event.Result.ALLOW);
+            }
         });
     }
 }

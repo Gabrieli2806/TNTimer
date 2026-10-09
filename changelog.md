@@ -1,13 +1,6 @@
-## [3.0.2] - 2026-10-09
-### Fixed
-- 3D timer above TNT was never drawn; it now uses the vanilla nametag renderer
-
-## [3.0.1] - 2026-10-09
+## [3.0.0] - 2026-10-09
 ### Added
-- Support for Minecraft 1.16.2 - 1.16.5 (same jar; the API it uses is identical across these versions)
-
-## [3.0.0] - 2026-10-08
-### Added
+- Port to Minecraft 1.15.2 (Fabric and Forge)
 - Forge support (multiloader: Fabric and Forge)
 - Redesigned settings screen with tooltips, sliders and per-mode sections
 - HUD text scale option

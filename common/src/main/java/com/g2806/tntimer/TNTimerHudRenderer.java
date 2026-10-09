@@ -3,7 +3,7 @@ package com.g2806.tntimer;
 import net.minecraft.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.entity.Entity;
 
@@ -28,7 +28,7 @@ public final class TNTimerHudRenderer {
     private TNTimerHudRenderer() {
     }
 
-    public static void render(PoseStack poseStack) {
+    public static void render() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.options.hideGui) return;
 
@@ -42,11 +42,11 @@ public final class TNTimerHudRenderer {
         int[] fuses = entities.stream().mapToInt(FusedEntities::fuseOf).toArray();
         Arrays.sort(fuses);
 
-        drawTimers(poseStack, mc.font, fuses, mc.getWindow().getGuiScaledWidth(),
+        drawTimers(mc.font, fuses, mc.getWindow().getGuiScaledWidth(),
                 mc.getWindow().getGuiScaledHeight(), config);
     }
 
-    private static void drawTimers(PoseStack poseStack, Font font, int[] fuses,
+    private static void drawTimers(Font font, int[] fuses,
                                    int screenWidth, int screenHeight, TNTimerConfig config) {
         float scale = config.hudScale;
         int scaledWidth = Math.round(screenWidth / scale);
@@ -54,8 +54,8 @@ public final class TNTimerHudRenderer {
         int textHeight = font.lineHeight;
         int displayCount = Math.min(fuses.length, config.maxTntDisplay);
 
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, 1.0F);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scale, scale, 1.0F);
 
         for (int i = 0; i < displayCount; i++) {
             int fuse = fuses[i];
@@ -66,15 +66,15 @@ public final class TNTimerHudRenderer {
             int y = verticalPosition(config.position, i, scaledHeight, textHeight);
 
             if (config.showBackground) {
-                GuiComponent.fill(poseStack, x - BACKGROUND_PADDING, y - BACKGROUND_PADDING,
+                GuiComponent.fill(x - BACKGROUND_PADDING, y - BACKGROUND_PADDING,
                         x + textWidth + BACKGROUND_PADDING, y + textHeight + BACKGROUND_PADDING,
                         BACKGROUND_COLOR);
             }
 
-            font.drawShadow(poseStack, text, x, y, TimerFormat.color(fuse));
+            font.drawShadow(text, x, y, TimerFormat.color(fuse));
         }
 
-        poseStack.popPose();
+        RenderSystem.popMatrix();
     }
 
     private static int horizontalPosition(TNTimerConfig.Position position, int screenWidth, int textWidth) {

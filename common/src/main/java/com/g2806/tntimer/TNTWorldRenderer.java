@@ -1,10 +1,7 @@
 package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,7 +29,7 @@ public final class TNTWorldRenderer {
     }
 
     /** The label for {@code entity} this frame, or null if it shouldn't get one. */
-    public static Component labelFor(Entity entity) {
+    public static String labelFor(Entity entity) {
         int fuse = FusedEntities.fuseOf(entity);
         if (fuse == FusedEntities.NO_FUSE) return null;
 
@@ -44,8 +41,15 @@ public final class TNTWorldRenderer {
 
         if (!labelledThisFrame(mc, config).contains(entity)) return null;
 
-        return new TextComponent(TimerFormat.format(fuse, config.showOnlySeconds))
-                .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(TimerFormat.color(fuse) & 0xFFFFFF)));
+        // Nametags take a plain string before 1.16; colour it with a formatting code.
+        return chatColor(fuse) + TimerFormat.format(fuse, config.showOnlySeconds);
+    }
+
+    private static ChatFormatting chatColor(int fuse) {
+        int color = TimerFormat.color(fuse);
+        if (color == TimerFormat.COLOR_DANGER) return ChatFormatting.RED;
+        if (color == TimerFormat.COLOR_WARNING) return ChatFormatting.GOLD;
+        return ChatFormatting.WHITE;
     }
 
     /** Recomputed once per frame: closest fused entities, so the max-timers limit keeps the ones that matter. */

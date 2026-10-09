@@ -1,15 +1,13 @@
 package com.g2806.tntimer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
@@ -113,14 +111,14 @@ public class TNTimerConfigScreen extends Screen {
         int buttonWidth = (totalWidth - 2 * gap) / 3;
 
         addButton(withTooltip(new Button(leftX, footerY, buttonWidth, ROW_HEIGHT,
-                new TranslatableComponent("tntimer.config.reset"), btn -> {
+                I18n.get("tntimer.config.reset"), btn -> {
                     working.copyFrom(new TNTimerConfig());
                     init(this.minecraft, this.width, this.height); // rebuild widgets with defaults
                 }), "reset"));
         addButton(new Button(leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
-                new TranslatableComponent("gui.cancel"), btn -> onClose()));
+                I18n.get("gui.cancel"), btn -> onClose()));
         addButton(new Button(leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
-                new TranslatableComponent("gui.done"), btn -> {
+                I18n.get("gui.done"), btn -> {
                     applyAndSave();
                     onClose();
                 }));
@@ -177,52 +175,48 @@ public class TNTimerConfigScreen extends Screen {
     }
 
     /** Vanilla background plus the column panels. Before 1.20.2 screens draw it themselves. */
-    private void renderPanels(PoseStack graphics) {
-        renderBackground(graphics);
+    private void renderPanels() {
+        renderBackground();
 
         int modeBottom = hudMode() ? hudBottom : worldBottom;
         if (twoColumns) {
             int bottom = Math.max(leftBottom, modeBottom);
-            drawPanel(graphics, leftX, TOP, bottom);
-            drawPanel(graphics, rightX, rightTop, bottom);
+            drawPanel(leftX, TOP, bottom);
+            drawPanel(rightX, rightTop, bottom);
         } else {
-            drawPanel(graphics, leftX, TOP, leftBottom);
-            drawPanel(graphics, rightX, rightTop, modeBottom);
+            drawPanel(leftX, TOP, leftBottom);
+            drawPanel(rightX, rightTop, modeBottom);
         }
     }
 
-    private static void drawPanel(PoseStack graphics, int x, int top, int bottom) {
+    private static void drawPanel(int x, int top, int bottom) {
         int x0 = x - PANEL_PAD;
         int y0 = top - PANEL_PAD;
         int x1 = x + COLUMN_WIDTH + PANEL_PAD;
         int y1 = bottom + PANEL_PAD - ROW_GAP;
-        GuiComponent.fill(graphics, x0, y0, x1, y1, PANEL_COLOR);
+        fill(x0, y0, x1, y1, PANEL_COLOR);
         // 1px border (no outline helper before 1.20)
-        GuiComponent.fill(graphics, x0, y0, x1, y0 + 1, PANEL_BORDER);
-        GuiComponent.fill(graphics, x0, y1 - 1, x1, y1, PANEL_BORDER);
-        GuiComponent.fill(graphics, x0, y0 + 1, x0 + 1, y1 - 1, PANEL_BORDER);
-        GuiComponent.fill(graphics, x1 - 1, y0 + 1, x1, y1 - 1, PANEL_BORDER);
+        fill(x0, y0, x1, y0 + 1, PANEL_BORDER);
+        fill(x0, y1 - 1, x1, y1, PANEL_BORDER);
+        fill(x0, y0 + 1, x0 + 1, y1 - 1, PANEL_BORDER);
+        fill(x1 - 1, y0 + 1, x1, y1 - 1, PANEL_BORDER);
     }
 
     @Override
-    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick) {
-        renderPanels(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void render(int mouseX, int mouseY, float partialTick) {
+        renderPanels();
+        super.render(mouseX, mouseY, partialTick);
 
-        drawCenteredString(graphics, this.font, this.title, this.width / 2, 12, TITLE_COLOR);
-        drawCenteredString(graphics, this.font, new TranslatableComponent("tntimer.config.subtitle"),
-                this.width / 2, 23, SUBTITLE_COLOR);
+        drawCenteredString(this.font, this.title.getColoredString(), this.width / 2, 12, TITLE_COLOR);
+        drawCenteredString(this.font, I18n.get("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
 
-        drawString(graphics, this.font, new TranslatableComponent("tntimer.config.section.general"),
-                leftX, TOP + 2, HEADER_COLOR);
-        drawString(graphics, this.font, new TranslatableComponent(hudMode()
-                        ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
+        drawString(this.font, I18n.get("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
+        drawString(this.font, I18n.get(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
                 rightX, rightTop + 2, HEADER_COLOR);
         if (!hudMode()) {
             int lineY = rightTop + HEADER_HEIGHT + 2;
-            for (FormattedCharSequence line : this.font.split(
-                    new TranslatableComponent("tntimer.config.section.world.info"), COLUMN_WIDTH)) {
-                this.font.drawShadow(graphics, line, rightX, lineY, SUBTITLE_COLOR);
+            for (String line : this.font.split(I18n.get("tntimer.config.section.world.info"), COLUMN_WIDTH)) {
+                this.font.drawShadow(line, rightX, lineY, SUBTITLE_COLOR);
                 lineY += this.font.lineHeight;
             }
         }
@@ -230,7 +224,7 @@ public class TNTimerConfigScreen extends Screen {
         for (Map.Entry<AbstractWidget, Component> entry : tooltips.entrySet()) {
             AbstractWidget widget = entry.getKey();
             if (widget.visible && widget.isMouseOver(mouseX, mouseY)) {
-                renderTooltip(graphics, this.font.split(entry.getValue(), 200), mouseX, mouseY);
+                renderTooltip(this.font.split(entry.getValue().getString(), 200), mouseX, mouseY);
                 break;
             }
         }
@@ -252,7 +246,7 @@ public class TNTimerConfigScreen extends Screen {
 
         IntSlider(int x, int y, int width, Component label, int min, int max, int step, int initial,
                   IntFunction<String> formatter, IntConsumer onChange) {
-            super(x, y, width, ROW_HEIGHT, new TextComponent(""),
+            super(Minecraft.getInstance().options, x, y, width, ROW_HEIGHT,
                     (Mth.clamp(initial, min, max) - min) / (double) (max - min));
             this.label = label;
             this.min = min;
@@ -271,7 +265,7 @@ public class TNTimerConfigScreen extends Screen {
 
         @Override
         protected void updateMessage() {
-            setMessage(new TextComponent("").append(label).append(": ").append(formatter.apply(currentValue())));
+            setMessage(label.getString() + ": " + formatter.apply(currentValue()));
         }
 
         @Override
