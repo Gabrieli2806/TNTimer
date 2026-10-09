@@ -1,0 +1,99 @@
+name: Publish
+
+# Publishing a GitHub release (from any mc/* branch) builds all loaders and uploads each jar
+# to Modrinth and CurseForge. Versions come from gradle.properties, the changelog from the
+# release notes. Mark the release as "pre-release" to publish as beta.
+#
+# Needs repository secrets MODRINTH_TOKEN, CURSEFORGE_TOKEN and
+# repository variables MODRINTH_PROJECT_ID, CURSEFORGE_PROJECT_ID.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Read gradle.properties
+        id: props
+        run: |
+          prop() { grep "^$1=" gradle.properties | cut -d= -f2; }
+          echo "mod_version=$(prop mod_version)" >> "$GITHUB_OUTPUT"
+          echo "minecraft=$(prop minecraft_version)" >> "$GITHUB_OUTPUT"
+          echo "game_versions=>=$(prop minecraft_version_min) <$(prop minecraft_version_next)" >> "$GITHUB_OUTPUT"
+          echo "java=$(prop java_version)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          # This branch uses Gradle 8 (ForgeGradle 6 needs it), which runs on 21.
+          java-version: |
+            ${{ steps.props.outputs.java }}
+            21
+
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Publish Fabric
+        uses: Kir-Antipov/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            fabric/build/libs/!(*-sources).jar
+          name: TNTimer ${{ steps.props.outputs.mod_version }} (Fabric ${{ steps.props.outputs.minecraft }})
+          version: ${{ steps.props.outputs.mod_version }}+${{ steps.props.outputs.minecraft }}-fabric
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
+          loaders: fabric
+          game-versions: ${{ steps.props.outputs.game_versions }}
+          java: ${{ steps.props.outputs.java }}
+          dependencies: |
+            fabric-api(required)
+            modmenu(optional)
+
+      - name: Publish NeoForge
+        uses: Kir-Antipov/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            neoforge/build/libs/!(*-sources).jar
+          name: TNTimer ${{ steps.props.outputs.mod_version }} (NeoForge ${{ steps.props.outputs.minecraft }})
+          version: ${{ steps.props.outputs.mod_version }}+${{ steps.props.outputs.minecraft }}-neoforge
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
+          loaders: neoforge
+          game-versions: ${{ steps.props.outputs.game_versions }}
+          java: ${{ steps.props.outputs.java }}
+
+      - name: Publish Forge
+        uses: Kir-Antipov/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            forge/build/libs/!(*-sources).jar
+          name: TNTimer ${{ steps.props.outputs.mod_version }} (Forge ${{ steps.props.outputs.minecraft }})
+          version: ${{ steps.props.outputs.mod_version }}+${{ steps.props.outputs.minecraft }}-forge
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
+          loaders: forge
+          game-versions: ${{ steps.props.outputs.game_versions }}
+          java: ${{ steps.props.outputs.java }}
