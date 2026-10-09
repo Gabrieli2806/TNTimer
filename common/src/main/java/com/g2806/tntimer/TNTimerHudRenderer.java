@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
@@ -43,7 +43,7 @@ public final class TNTimerHudRenderer {
         }
         Arrays.sort(fuses);
 
-        ScaledResolution resolution = new ScaledResolution(mc);
+        ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
         drawTimers(mc.fontRendererObj, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
     }
 
@@ -55,8 +55,8 @@ public final class TNTimerHudRenderer {
         int textHeight = font.FONT_HEIGHT;
         int displayCount = Math.min(fuses.length, config.maxTntDisplay);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, 1.0F);
+        GL11.glPushMatrix();
+        GL11.glScalef(scale, scale, 1.0F);
 
         for (int i = 0; i < displayCount; i++) {
             int fuse = fuses[i];
@@ -75,7 +75,7 @@ public final class TNTimerHudRenderer {
             font.drawStringWithShadow(text, x, y, TimerFormat.color(fuse));
         }
 
-        GlStateManager.popMatrix();
+        GL11.glPopMatrix();
     }
 
     private static int horizontalPosition(TNTimerConfig.Position position, int screenWidth, int textWidth) {

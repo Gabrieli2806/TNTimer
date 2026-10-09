@@ -7,17 +7,18 @@ import com.g2806.tntimer.TNTimerKeys;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
  * Forge glue for legacy Minecraft. Forge here has no Mixin, so the HUD and 3D labels hook
  * Forge's render events instead of the shared mixins used on 1.16.5+.
  */
-@Mod(modid = TNTimer.MOD_ID, useMetadata = true, clientSideOnly = true,
+@Mod(modid = TNTimer.MOD_ID, useMetadata = true,
         guiFactory = "com.g2806.tntimer.forge.TNTimerGuiFactory")
 public final class TNTimerForge {
 
@@ -27,6 +28,7 @@ public final class TNTimerForge {
         TNTimer.init();
         ClientRegistry.registerKeyBinding(TNTimerKeys.OPEN_CONFIG);
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this); // tick events live on the FML bus before 1.8
     }
 
     @SubscribeEvent

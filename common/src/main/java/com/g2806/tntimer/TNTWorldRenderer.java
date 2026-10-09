@@ -2,10 +2,8 @@ package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumChatFormatting;
@@ -34,8 +32,8 @@ public final class TNTWorldRenderer {
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.WORLD) return;
 
-        RenderManager rm = mc.getRenderManager();
-        if (mc.getRenderViewEntity() == null) return;
+        RenderManager rm = RenderManager.instance;
+        if (mc.renderViewEntity == null) return;
         final double camX = rm.viewerPosX;
         final double camY = rm.viewerPosY;
         final double camZ = rm.viewerPosZ;
@@ -66,40 +64,40 @@ public final class TNTWorldRenderer {
 
     private static void drawLabel(FontRenderer font, String text, float x, float y, float z,
                                   float viewerYaw, float viewerPitch, boolean thirdPersonFrontal) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, z);
         GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((thirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-        GlStateManager.disableLighting();
-        GlStateManager.depthMask(false);
-        GlStateManager.disableDepth();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GL11.glRotatef(-viewerYaw, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef((thirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+        GL11.glScalef(-0.025F, -0.025F, 0.025F);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDepthMask(false);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
         int halfWidth = font.getStringWidth(text) / 2;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer buffer = tessellator.getWorldRenderer();
-        GlStateManager.disableTexture2D();
-        buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(-halfWidth - 1, -1, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(-halfWidth - 1, 8, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(halfWidth + 1, 8, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(halfWidth + 1, -1, 0).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        Tessellator tessellator = Tessellator.instance;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
+        tessellator.addVertex(-halfWidth - 1, -1, 0);
+        tessellator.addVertex(-halfWidth - 1, 8, 0);
+        tessellator.addVertex(halfWidth + 1, 8, 0);
+        tessellator.addVertex(halfWidth + 1, -1, 0);
         tessellator.draw();
-        GlStateManager.enableTexture2D();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         // Faint pass visible through blocks, then the solid pass on top, like a vanilla nametag.
         font.drawString(text, -halfWidth, 0, 0x20FFFFFF);
-        GlStateManager.enableDepth();
-        GlStateManager.depthMask(true);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
         font.drawString(text, -halfWidth, 0, -1);
 
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glPopMatrix();
     }
 
     /** Nameplates take formatting codes, not RGB: white, gold and red match the HUD colours. */

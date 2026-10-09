@@ -7,6 +7,6 @@
 - Config button in the Forge mod list; `K` keybind to open settings
 
 ### Changed
-- First release for Minecraft 1.8.9, on the shared 3.0 code base
+- First release for Minecraft 1.7.10, on the shared 3.0 code base
 - HUD timers sorted by soonest explosion; 3D labels prefer the closest TNT
 - Timer colours: white, orange under 2s, red under 1s

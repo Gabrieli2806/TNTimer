@@ -3,7 +3,7 @@ package com.g2806.tntimer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
 
@@ -213,7 +213,7 @@ public class TNTimerConfigScreen extends GuiScreen {
             GuiButton widget = entry.getKey();
             if (widget.visible && widget.isMouseOver()) {
                 drawHoveringText(this.fontRendererObj.listFormattedStringToWidth(entry.getValue(), 200), mouseX, mouseY);
-                GlStateManager.disableLighting();
+                GL11.glDisable(GL11.GL_LIGHTING);
                 break;
             }
         }
@@ -304,7 +304,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         }
 
         @Override
-        protected int getHoverState(boolean mouseOver) {
+        public int getHoverState(boolean mouseOver) {
             return 0; // slider track, like vanilla's option sliders
         }
 
@@ -312,7 +312,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
             if (!this.visible) return;
             if (dragging) setFromMouse(mouseX);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int knobX = this.xPosition + (int) (value * (this.width - 8));
             drawTexturedModalRect(knobX, this.yPosition, 0, 66, 4, 20);
             drawTexturedModalRect(knobX + 4, this.yPosition, 196, 66, 4, 20);

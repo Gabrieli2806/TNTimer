@@ -2,7 +2,7 @@ package com.g2806.tntimer.forge;
 
 import com.g2806.tntimer.platform.IPlatformHelper;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.fml.common.Loader;
+import cpw.mods.fml.common.Loader;
 
 import java.nio.file.Path;
 

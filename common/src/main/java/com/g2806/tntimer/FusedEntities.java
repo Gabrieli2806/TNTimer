@@ -19,7 +19,8 @@ public final class FusedEntities {
     /** All entities currently counting down, in no particular order. */
     public static List<Entity> collect(World world) {
         List<Entity> list = new ArrayList<>();
-        for (Entity entity : world.loadedEntityList) {
+        for (Object object : world.loadedEntityList) {
+            Entity entity = (Entity) object; // raw list before 1.8
             if (fuseOf(entity) != NO_FUSE) {
                 list.add(entity);
             }
