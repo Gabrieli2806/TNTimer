@@ -1,7 +1,11 @@
 package com.g2806.tntimer.forge;
 
 import com.g2806.tntimer.TNTimer;
+import com.g2806.tntimer.TNTimerHudRenderer;
 import com.g2806.tntimer.TNTimerKeys;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -28,6 +32,11 @@ public final class TNTimerForge {
         // Key mappings are registered during client setup before 1.19.
         FMLJavaModLoadingContext.get().getModEventBus()
                 .addListener((FMLClientSetupEvent event) -> ClientRegistry.registerKeyBinding(TNTimerKeys.OPEN_CONFIG));
+
+        // The loader replaces vanilla's Gui.render, so the HUD mixin can't run; draw from its event.
+        MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post event) -> {
+            if (event.getType() == RenderGameOverlayEvent.ElementType.ALL && Minecraft.getInstance().gui.getClass() != Gui.class) TNTimerHudRenderer.render(event.getMatrixStack());
+        });
 
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
             if (event.phase == TickEvent.Phase.END) TNTimerKeys.handlePresses();
