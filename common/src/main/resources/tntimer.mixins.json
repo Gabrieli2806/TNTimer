@@ -6,7 +6,7 @@
 	"mixins": [],
 	"client": [
 		"HudMixin",
-		"LevelRendererMixin"
+		"EntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
