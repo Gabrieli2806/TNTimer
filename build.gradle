@@ -1,7 +1,3 @@
-plugins {
-	id 'java'
-}
-
 subprojects {
 	apply plugin: 'java'
 
@@ -40,6 +36,7 @@ subprojects {
 				mod_description: project.mod_description,
 				java_version   : project.java_version,
 				minecraft_version   : project.minecraft_version,
+				minecraft_version_next: project.minecraft_version_next,
 				fabric_loader_version: project.fabric_loader_version,
 				fabric_api_version  : project.fabric_api_version,
 				modmenu_version     : project.modmenu_version,

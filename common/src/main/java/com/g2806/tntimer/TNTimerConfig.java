@@ -1,19 +1,29 @@
 package com.g2806.tntimer;
 
+import com.g2806.tntimer.platform.Services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.g2806.tntimer.platform.Services;
+import com.google.gson.JsonParseException;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
+/**
+ * User settings, stored as JSON in the loader's config directory (config/tntimer.json).
+ * Public fields are the serialized format; keep their names stable so old files keep loading.
+ */
 public class TNTimerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(TNTimerConfig.class);
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final String FILE_NAME = "tntimer.json";
     private static TNTimerConfig instance;
 
     public boolean enabled = true;
@@ -22,8 +32,14 @@ public class TNTimerConfig {
     public int maxTntDisplay = 5;
     public boolean showOnlySeconds = true;
     public boolean showBackground = false;
+    public boolean showSulfurCubes = true;
+    public float hudScale = 1.0f;
 
-    // Display mode: HUD overlay or 3D world nametag
+    public static final float MIN_HUD_SCALE = 0.5f;
+    public static final float MAX_HUD_SCALE = 3.0f;
+    public static final int MAX_TNT_DISPLAY = 20;
+
+    /** HUD overlay or 3D nametag above the entity. */
     public enum DisplayMode {
         HUD("tntimer.display_mode.hud"),
         WORLD("tntimer.display_mode.world");
@@ -37,14 +53,9 @@ public class TNTimerConfig {
         public Component getDisplayName() {
             return Component.translatable(translationKey);
         }
-
-        @Override
-        public String toString() {
-            return Component.translatable(translationKey).getString();
-        }
     }
 
-    // Enum for screen positions (HUD mode)
+    /** Where the HUD timer list is anchored. */
     public enum Position {
         TOP_LEFT("tntimer.position.top_left"),
         TOP_RIGHT("tntimer.position.top_right"),
@@ -63,14 +74,8 @@ public class TNTimerConfig {
         public Component getDisplayName() {
             return Component.translatable(translationKey);
         }
-
-        @Override
-        public String toString() {
-            return Component.translatable(translationKey).getString();
-        }
     }
 
-    // Singleton pattern
     public static TNTimerConfig getInstance() {
         if (instance == null) {
             instance = load();
@@ -78,48 +83,80 @@ public class TNTimerConfig {
         return instance;
     }
 
-    private static File configFile() {
-        return Services.PLATFORM.getConfigDirectory().resolve("tntimer.json").toFile();
+    private static Path configFile() {
+        return Services.PLATFORM.getConfigDirectory().resolve(FILE_NAME);
     }
 
-    // Load configuration from file
-    public static TNTimerConfig load() {
-        File configFile = configFile();
-        Gson gson = new Gson();
-        TNTimerConfig config = new TNTimerConfig();
+    private static TNTimerConfig load() {
+        Path file = configFile();
+        if (!Files.exists(file)) {
+            return new TNTimerConfig();
+        }
 
-        if (configFile.exists()) {
-            try (FileReader reader = new FileReader(configFile)) {
-                TNTimerConfig loaded = gson.fromJson(reader, TNTimerConfig.class);
-                if (loaded != null) {
-                    config = loaded;
-                    // Ensure non-null enum defaults after deserialization
-                    if (config.displayMode == null) config.displayMode = DisplayMode.HUD;
-                    if (config.position == null) config.position = Position.TOP_LEFT;
-                }
-            } catch (IOException e) {
-                LOGGER.error("Failed to load config: {}", configFile.getAbsolutePath(), e);
+        try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
+            TNTimerConfig loaded = GSON.fromJson(reader, TNTimerConfig.class);
+            if (loaded == null) {
+                return new TNTimerConfig();
             }
+            loaded.sanitize();
+            return loaded;
+        } catch (IOException | JsonParseException e) {
+            // A broken file must not crash the game: keep a copy for the user and use defaults.
+            LOGGER.error("Failed to read {}, using defaults", file, e);
+            backupBrokenFile(file);
+            return new TNTimerConfig();
         }
-
-        return config;
     }
 
-    // Save configuration to file
-    public void save() {
-        File configFile = configFile();
-        File configDir = configFile.getParentFile();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        if (!configDir.exists() && !configDir.mkdirs()) {
-            LOGGER.error("Failed to create config directory: {}", configDir.getAbsolutePath());
-            return;
-        }
-
-        try (FileWriter writer = new FileWriter(configFile)) {
-            gson.toJson(this, writer);
+    private static void backupBrokenFile(Path file) {
+        try {
+            Files.move(file, file.resolveSibling(FILE_NAME + ".broken"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            LOGGER.error("Failed to save config: {}", configFile.getAbsolutePath(), e);
+            LOGGER.warn("Could not back up broken config {}", file, e);
+        }
+    }
+
+    /**
+     * Repairs values Gson can't validate: unknown enum names become null, and hand-edited
+     * numbers can be out of range.
+     */
+    public void sanitize() {
+        TNTimerConfig defaults = new TNTimerConfig();
+        if (displayMode == null) displayMode = defaults.displayMode;
+        if (position == null) position = defaults.position;
+        hudScale = Math.clamp(hudScale, MIN_HUD_SCALE, MAX_HUD_SCALE);
+        maxTntDisplay = Math.clamp(maxTntDisplay, 1, MAX_TNT_DISPLAY);
+    }
+
+    public TNTimerConfig copy() {
+        TNTimerConfig copy = new TNTimerConfig();
+        copy.copyFrom(this);
+        return copy;
+    }
+
+    public void copyFrom(TNTimerConfig other) {
+        enabled = other.enabled;
+        displayMode = other.displayMode;
+        position = other.position;
+        maxTntDisplay = other.maxTntDisplay;
+        showOnlySeconds = other.showOnlySeconds;
+        showBackground = other.showBackground;
+        showSulfurCubes = other.showSulfurCubes;
+        hudScale = other.hudScale;
+    }
+
+    public void save() {
+        Path file = configFile();
+        Path temp = file.resolveSibling(FILE_NAME + ".tmp");
+        try {
+            Files.createDirectories(file.getParent());
+            try (Writer writer = Files.newBufferedWriter(temp, StandardCharsets.UTF_8)) {
+                GSON.toJson(this, writer);
+            }
+            // Write-then-move so a crash mid-save never leaves a half-written config.
+            Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        } catch (IOException e) {
+            LOGGER.error("Failed to save {}", file, e);
         }
     }
 }

@@ -30,7 +30,8 @@ public final class TNTWorldRenderer {
 
     public static void submit(PoseStack poseStack, LevelRenderState levelState, SubmitNodeCollector collector) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc == null || mc.level == null || mc.player == null) return;
+        // Vanilla hides nametags with F1, so do the same for ours.
+        if (mc.level == null || mc.gui.hud.isHidden()) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.WORLD) return;
@@ -38,57 +39,39 @@ public final class TNTWorldRenderer {
         CameraRenderState cameraState = levelState.cameraRenderState;
         if (cameraState == null || cameraState.pos == null) return;
         Vec3 cameraPos = cameraState.pos;
+        float partialTick = levelState.worldPartialTicks;
 
-        List<Entity> tntEntities = FusedEntities.collect(mc.level);
+        // No distance filter: vanilla nametag rendering already hides far-away labels.
+        List<Entity> entities = FusedEntities.collect(mc.level, config.showSulfurCubes);
+        if (entities.isEmpty()) return;
 
-        if (tntEntities.isEmpty()) return;
+        // Closest first, so the max-timers limit keeps the labels that matter most.
+        entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(cameraPos)));
 
-        tntEntities.sort(Comparator.<Entity>comparingDouble(
-                tnt -> tnt.distanceToSqr(cameraPos)).reversed());
-
-        int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
-
+        int displayCount = Math.min(entities.size(), config.maxTntDisplay);
         for (int i = 0; i < displayCount; i++) {
-            submitLabel(tntEntities.get(i), poseStack, collector, cameraState, cameraPos, config);
+            submitLabel(entities.get(i), partialTick, poseStack, collector, cameraState, cameraPos, config);
         }
     }
 
-    private static void submitLabel(Entity tnt, PoseStack poseStack,
+    private static void submitLabel(Entity entity, float partialTick, PoseStack poseStack,
                                     SubmitNodeCollector collector,
                                     CameraRenderState cameraState, Vec3 cameraPos,
                                     TNTimerConfig config) {
-        int fuse = FusedEntities.fuseOf(tnt);
-        double seconds = fuse / 20.0;
-        String formattedSeconds = String.format("%.1f", seconds).replace(',', '.');
+        int fuse = FusedEntities.fuseOf(entity);
+        Component label = Component.literal(TimerFormat.format(fuse, config.showOnlySeconds))
+                .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(TimerFormat.color(fuse) & 0xFFFFFF)));
 
-        String timeLeft = config.showOnlySeconds
-                ? formattedSeconds + "s"
-                : "TNT: " + formattedSeconds + "s";
-
-        int color;
-        if (fuse < 20) {
-            color = 0xFF0000;
-        } else if (fuse < 40) {
-            color = 0xFF8000;
-        } else {
-            color = 0xFFFFFF;
-        }
-
-        Component labelText = Component.literal(timeLeft).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
-
-        double x = tnt.getX() - cameraPos.x;
-        double y = tnt.getY() - cameraPos.y;
-        double z = tnt.getZ() - cameraPos.z;
-
-        Vec3 nameTagAttachment = new Vec3(0.0, tnt.getBbHeight() + VERTICAL_OFFSET, 0.0);
+        // Interpolated position, so labels on moving TNT or sulfur cubes don't jitter.
+        Vec3 pos = entity.getPosition(partialTick).subtract(cameraPos);
+        Vec3 nameTagAttachment = new Vec3(0.0, entity.getBbHeight() + VERTICAL_OFFSET, 0.0);
 
         poseStack.pushPose();
-        poseStack.translate(x, y, z);
+        poseStack.translate(pos.x, pos.y, pos.z);
 
-        // Parameters match vanilla EntityRenderer.submitNameDisplay:
-        // poseStack, nameTagAttachment, yOffset (0), text, visible (true),
-        // lightCoords (full bright), cameraState
-        collector.submitNameTag(poseStack, nameTagAttachment, 0, labelText, true,
+        // Same arguments as vanilla EntityRenderer.submitNameDisplay: attachment point,
+        // no extra y offset, always visible (not sneaking), full bright.
+        collector.submitNameTag(poseStack, nameTagAttachment, 0, label, true,
                 LightCoordsUtil.FULL_BRIGHT, cameraState);
 
         poseStack.popPose();

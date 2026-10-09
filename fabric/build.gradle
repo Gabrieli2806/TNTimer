@@ -1,9 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom' version '1.17.12'
-}
-
-base {
-	archivesName = "${project.mod_id}-fabric"
+	id 'net.fabricmc.fabric-loom' version '1.18.3'
 }
 
 dependencies {

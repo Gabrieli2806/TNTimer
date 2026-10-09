@@ -1,16 +1,9 @@
 plugins {
-	id 'net.neoforged.moddev' version '2.0.147'
-}
-
-base {
-	archivesName = "${project.mod_id}-neoforge"
+	id 'net.neoforged.moddev' version '2.0.148'
 }
 
 neoForge {
 	version = project.neoforge_version
-
-	// Shared mixin config, shipped from common.
-	validateAccessTransformers = true
 
 	runs {
 		client {

@@ -22,9 +22,11 @@ public final class FusedEntities {
     private FusedEntities() {
     }
 
-    public static List<Entity> collect(ClientLevel level) {
+    /** All entities currently counting down, in no particular order. */
+    public static List<Entity> collect(ClientLevel level, boolean includeSulfurCubes) {
         List<Entity> list = new ArrayList<>();
         for (Entity entity : level.entitiesForRendering()) {
+            if (!includeSulfurCubes && entity instanceof SulfurCube) continue;
             if (fuseOf(entity) != NO_FUSE) {
                 list.add(entity);
             }

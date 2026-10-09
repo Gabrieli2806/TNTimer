@@ -16,7 +16,7 @@ public final class TNTimerKeys {
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.tntimer.open_config",
             InputConstants.Type.KEYBOARD,
-            InputConstants.UNKNOWN.getValue(),
+            InputConstants.KEY_K,
             CATEGORY);
 
     private TNTimerKeys() {

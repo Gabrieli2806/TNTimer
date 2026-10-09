@@ -29,3 +29,6 @@ Thumbs.db
 
 # Eclipse/VSCode java output
 bin/
+
+# ForgeGradle generated run configs
+*.launch

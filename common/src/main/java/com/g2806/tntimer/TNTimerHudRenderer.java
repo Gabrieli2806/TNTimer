@@ -1,9 +1,11 @@
 package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.Entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,98 +16,82 @@ public final class TNTimerHudRenderer {
 
     private static final int PADDING = 10;
     private static final int LINE_SPACING = 5;
+    private static final int BACKGROUND_PADDING = 2;
+    private static final int BACKGROUND_COLOR = 0x80000000;
+    /** Keeps BOTTOM_CENTER timers above the hotbar, hearts and XP bar. */
+    private static final int HOTBAR_CLEARANCE = 60;
+    /** Gap between the crosshair and the first UNDER_CURSOR timer. */
+    private static final int CURSOR_OFFSET = 15;
 
     private TNTimerHudRenderer() {
     }
 
     public static void render(GuiGraphicsExtractor context) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc == null || mc.level == null) return;
+        if (mc.level == null || mc.gui.hud.isHidden()) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-        List<Entity> tntEntities = FusedEntities.collect(mc.level);
-        if (tntEntities.isEmpty()) return;
+        List<Entity> entities = FusedEntities.collect(mc.level, config.showSulfurCubes);
+        if (entities.isEmpty()) return;
 
-        int screenWidth = mc.getWindow().getGuiScaledWidth();
-        int screenHeight = mc.getWindow().getGuiScaledHeight();
-        int textHeight = mc.font.lineHeight;
-        int displayCount = Math.min(tntEntities.size(), config.maxTntDisplay);
+        // Soonest explosion first, so the most urgent timer is always on top.
+        int[] fuses = entities.stream().mapToInt(FusedEntities::fuseOf).toArray();
+        Arrays.sort(fuses);
+
+        drawTimers(context, mc.font, fuses, mc.getWindow().getGuiScaledWidth(),
+                mc.getWindow().getGuiScaledHeight(), config);
+    }
+
+    private static void drawTimers(GuiGraphicsExtractor context, Font font, int[] fuses,
+                                   int screenWidth, int screenHeight, TNTimerConfig config) {
+        float scale = config.hudScale;
+        int scaledWidth = Math.round(screenWidth / scale);
+        int scaledHeight = Math.round(screenHeight / scale);
+        int textHeight = font.lineHeight;
+        int displayCount = Math.min(fuses.length, config.maxTntDisplay);
+
+        context.pose().pushMatrix();
+        context.pose().scale(scale, scale);
 
         for (int i = 0; i < displayCount; i++) {
-            int fuse = FusedEntities.fuseOf(tntEntities.get(i));
-            String timeLeft = formatFuseTime(fuse, config.showOnlySeconds);
-            int color = getFuseColor(fuse);
-            int textWidth = mc.font.width(timeLeft);
+            int fuse = fuses[i];
+            String text = TimerFormat.format(fuse, config.showOnlySeconds);
+            int textWidth = font.width(text);
 
-            int[] pos = calculatePosition(config.position, i, screenWidth, screenHeight,
-                    textWidth, textHeight);
+            int x = horizontalPosition(config.position, scaledWidth, textWidth);
+            int y = verticalPosition(config.position, i, scaledHeight, textHeight);
 
             if (config.showBackground) {
-                int bgPad = 2;
-                context.fill(pos[0] - bgPad, pos[1] - bgPad,
-                        pos[0] + textWidth + bgPad, pos[1] + textHeight + bgPad,
-                        0x80000000);
+                context.fill(x - BACKGROUND_PADDING, y - BACKGROUND_PADDING,
+                        x + textWidth + BACKGROUND_PADDING, y + textHeight + BACKGROUND_PADDING,
+                        BACKGROUND_COLOR);
             }
 
-            context.text(mc.font, timeLeft, pos[0], pos[1], color);
+            context.text(font, text, x, y, TimerFormat.color(fuse));
         }
+
+        context.pose().popMatrix();
     }
 
-    static String formatFuseTime(int fuse, boolean onlySeconds) {
-        double seconds = fuse / 20.0;
-        String formatted = String.format("%.1f", seconds).replace(',', '.');
-        return onlySeconds ? formatted + "s" : "TNT: " + formatted + "s";
+    private static int horizontalPosition(TNTimerConfig.Position position, int screenWidth, int textWidth) {
+        return switch (position) {
+            case TOP_LEFT, BOTTOM_LEFT -> PADDING;
+            case TOP_RIGHT, BOTTOM_RIGHT -> screenWidth - textWidth - PADDING;
+            case TOP_CENTER, BOTTOM_CENTER, UNDER_CURSOR -> (screenWidth - textWidth) / 2;
+        };
     }
 
-    static int getFuseColor(int fuse) {
-        if (fuse < 20) return 0xFFFF0000;      // Red < 1s
-        if (fuse < 40) return 0xFFFF8000;      // Orange < 2s
-        return 0xFFFFFFFF;                     // White
-    }
-
-    private static int[] calculatePosition(TNTimerConfig.Position position, int index,
-                                           int screenWidth, int screenHeight,
-                                           int textWidth, int textHeight) {
+    private static int verticalPosition(TNTimerConfig.Position position, int index,
+                                        int screenHeight, int textHeight) {
         int lineStep = textHeight + LINE_SPACING;
-        int x, y;
-
-        switch (position) {
-            case TOP_LEFT -> {
-                x = PADDING;
-                y = PADDING + index * lineStep;
-            }
-            case TOP_RIGHT -> {
-                x = screenWidth - textWidth - PADDING;
-                y = PADDING + index * lineStep;
-            }
-            case BOTTOM_LEFT -> {
-                x = PADDING;
-                y = screenHeight - (textHeight + PADDING) - index * lineStep;
-            }
-            case BOTTOM_RIGHT -> {
-                x = screenWidth - textWidth - PADDING;
-                y = screenHeight - (textHeight + PADDING) - index * lineStep;
-            }
-            case TOP_CENTER -> {
-                x = (screenWidth - textWidth) / 2;
-                y = PADDING + index * lineStep;
-            }
-            case BOTTOM_CENTER -> {
-                x = (screenWidth - textWidth) / 2;
-                y = screenHeight - 60 - index * lineStep;
-            }
-            case UNDER_CURSOR -> {
-                x = (screenWidth - textWidth) / 2;
-                y = Math.clamp(screenHeight / 2 + 15 + index * lineStep, 5, screenHeight - textHeight - 5);
-            }
-            default -> {
-                x = PADDING;
-                y = PADDING + index * lineStep;
-            }
-        }
-
-        return new int[]{x, y};
+        return switch (position) {
+            case TOP_LEFT, TOP_RIGHT, TOP_CENTER -> PADDING + index * lineStep;
+            case BOTTOM_LEFT, BOTTOM_RIGHT -> screenHeight - textHeight - PADDING - index * lineStep;
+            case BOTTOM_CENTER -> screenHeight - HOTBAR_CLEARANCE - index * lineStep;
+            case UNDER_CURSOR -> Math.clamp(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
+                    5, screenHeight - textHeight - 5);
+        };
     }
 }
