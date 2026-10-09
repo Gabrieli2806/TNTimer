@@ -43,8 +43,8 @@ public final class TNTimerHudRenderer {
         }
         Arrays.sort(fuses);
 
-        ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-        drawTimers(mc.fontRendererObj, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
+        ScaledResolution resolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        drawTimers(mc.fontRenderer, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
     }
 
     private static void drawTimers(FontRenderer font, int[] fuses, int screenWidth, int screenHeight,

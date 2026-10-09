@@ -19,7 +19,7 @@
 
 *Customization*
 * Track up to 20 timers at once; the most urgent (HUD) or closest (3D) are shown first
-* Settings screen with tooltips, via the Forge mod list or the keybind (default: `K`)
+* Settings screen with tooltips, opened with the keybind (default: `K`)
 * Translated into English, Spanish, German, French, Italian, Japanese, Polish, Russian and Chinese
 
 *Made For*
@@ -28,14 +28,14 @@
 * Redstone - Coordinate timed explosions
 
 **Requirements**
-* Minecraft 1.7.10, Java 8
+* Minecraft 1.6.4, Java 8
 * Forge 11.15.1+
 
 Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.
 
 **Configuration**
 
-Saved in `config/tntimer.json` (edit in-game with `K` or the mod list):
+Saved in `config/tntimer.json` (edit in-game with `K`):
 
 | Option | Default | Description |
 |--------|---------|-------------|

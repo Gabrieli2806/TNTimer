@@ -6,8 +6,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -22,7 +22,7 @@ import java.nio.file.StandardCopyOption;
  * Public fields are the serialized format; keep their names stable so old files keep loading.
  */
 public class TNTimerConfig {
-    private static final Logger LOGGER = LogManager.getLogger(TNTimerConfig.class);
+    private static final Logger LOGGER = Logger.getLogger(TNTimerConfig.class.getName());
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String FILE_NAME = "tntimer.json";
     private static TNTimerConfig instance;
@@ -51,7 +51,7 @@ public class TNTimerConfig {
         }
 
         public String getDisplayName() {
-            return I18n.format(translationKey);
+            return I18n.getString(translationKey);
         }
     }
 
@@ -72,7 +72,7 @@ public class TNTimerConfig {
         }
 
         public String getDisplayName() {
-            return I18n.format(translationKey);
+            return I18n.getString(translationKey);
         }
     }
 
@@ -102,7 +102,7 @@ public class TNTimerConfig {
             return loaded;
         } catch (IOException | JsonParseException e) {
             // A broken file must not crash the game: keep a copy for the user and use defaults.
-            LOGGER.error("Failed to read {}, using defaults", file, e);
+            LOGGER.log(Level.SEVERE, "Failed to read " + file + ", using defaults", e);
             backupBrokenFile(file);
             return new TNTimerConfig();
         }
@@ -112,7 +112,7 @@ public class TNTimerConfig {
         try {
             Files.move(file, file.resolveSibling(FILE_NAME + ".broken"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            LOGGER.warn("Could not back up broken config {}", file, e);
+            LOGGER.log(Level.WARNING, "Could not back up broken config " + file, e);
         }
     }
 
@@ -155,7 +155,7 @@ public class TNTimerConfig {
             // Write-then-move so a crash mid-save never leaves a half-written config.
             Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
-            LOGGER.error("Failed to save {}", file, e);
+            LOGGER.log(Level.SEVERE, "Failed to save " + file, e);
         }
     }
 }

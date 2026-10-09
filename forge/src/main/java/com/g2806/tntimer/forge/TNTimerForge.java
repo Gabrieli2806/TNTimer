@@ -4,49 +4,69 @@ import com.g2806.tntimer.TNTWorldRenderer;
 import com.g2806.tntimer.TNTimer;
 import com.g2806.tntimer.TNTimerHudRenderer;
 import com.g2806.tntimer.TNTimerKeys;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.event.ForgeSubscribe;
+
+import java.util.EnumSet;
 
 /**
- * Forge glue for legacy Minecraft. Forge here has no Mixin, so the HUD and 3D labels hook
- * Forge's render events instead of the shared mixins used on 1.16.5+.
+ * Forge glue for 1.6. Forge here has no Mixin and no config-button API, so the HUD and 3D
+ * labels hook Forge's render events and the settings screen opens with the K key.
  */
-@Mod(modid = TNTimer.MOD_ID, useMetadata = true,
-        guiFactory = "com.g2806.tntimer.forge.TNTimerGuiFactory")
+@Mod(modid = TNTimer.MOD_ID, useMetadata = true)
 public final class TNTimerForge {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ForgePlatformHelper.configDirectory = event.getModConfigurationDirectory().toPath();
         TNTimer.init();
-        ClientRegistry.registerKeyBinding(TNTimerKeys.OPEN_CONFIG);
+        KeyBindingRegistry.registerKeyBinding(new OpenConfigKey());
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this); // tick events live on the FML bus before 1.8
     }
 
-    @SubscribeEvent
+    @ForgeSubscribe
     public void onOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             TNTimerHudRenderer.render();
         }
     }
 
-    @SubscribeEvent
+    @ForgeSubscribe
     public void onWorldRendered(RenderWorldLastEvent event) {
         TNTWorldRenderer.render(event.partialTicks);
     }
 
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            TNTimerKeys.handlePresses();
+    /** FML 1.6 delivers key presses through a key handler instead of polling in a tick event. */
+    private static final class OpenConfigKey extends KeyBindingRegistry.KeyHandler {
+        OpenConfigKey() {
+            super(new KeyBinding[]{TNTimerKeys.OPEN_CONFIG}, new boolean[]{false});
+        }
+
+        @Override
+        public void keyDown(EnumSet<TickType> types, KeyBinding binding, boolean tickEnd, boolean isRepeat) {
+            if (tickEnd && Minecraft.getMinecraft().currentScreen == null) TNTimer.openConfigScreen();
+        }
+
+        @Override
+        public void keyUp(EnumSet<TickType> types, KeyBinding binding, boolean tickEnd) {
+        }
+
+        @Override
+        public EnumSet<TickType> ticks() {
+            return EnumSet.of(TickType.CLIENT);
+        }
+
+        @Override
+        public String getLabel() {
+            return "TNTimer keys";
         }
     }
 }

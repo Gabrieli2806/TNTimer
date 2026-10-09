@@ -2,7 +2,6 @@ package com.g2806.tntimer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -57,7 +56,7 @@ public final class TNTWorldRenderer {
             float y = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks - camY);
             float z = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks - camZ);
 
-            drawLabel(mc.fontRendererObj, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
+            drawLabel(mc.fontRenderer, label, x, y + entity.height + (float) VERTICAL_OFFSET, z,
                     rm.playerViewY, rm.playerViewX, thirdPersonFrontal);
         }
     }
@@ -74,7 +73,7 @@ public final class TNTWorldRenderer {
         GL11.glDepthMask(false);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GL11.glBlendFunc(770, 771);
 
         int halfWidth = font.getStringWidth(text) / 2;
         Tessellator tessellator = Tessellator.instance;

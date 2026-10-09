@@ -76,7 +76,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         // ---- General ----
         int y = TOP + HEADER_HEIGHT;
         y = addRow(onOff(leftX, y, "enabled", working.enabled, val -> working.enabled = val), y);
-        y = addRow(withTooltip(new CycleButton<>(nextId++, leftX, y, I18n.format("tntimer.config.display_mode.title"),
+        y = addRow(withTooltip(new CycleButton<>(nextId++, leftX, y, I18n.getString("tntimer.config.display_mode.title"),
                 TNTimerConfig.DisplayMode.values(), working.displayMode, TNTimerConfig.DisplayMode::getDisplayName,
                 val -> {
                     working.displayMode = val;
@@ -93,7 +93,7 @@ public class TNTimerConfigScreen extends GuiScreen {
         int modeY = rightTop + HEADER_HEIGHT;
 
         int hy = modeY;
-        hy = addRow(track(withTooltip(new CycleButton<>(nextId++, rightX, hy, I18n.format("tntimer.config.position.title"),
+        hy = addRow(track(withTooltip(new CycleButton<>(nextId++, rightX, hy, I18n.getString("tntimer.config.position.title"),
                 TNTimerConfig.Position.values(), working.position, TNTimerConfig.Position::getDisplayName,
                 val -> working.position = val), "position")), hy);
         hy = addRow(track(onOff(rightX, hy, "show_background", working.showBackground,
@@ -113,12 +113,12 @@ public class TNTimerConfigScreen extends GuiScreen {
         int buttonWidth = (totalWidth - 2 * gap) / 3;
 
         GuiButton reset = new GuiButton(ID_RESET, leftX, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("tntimer.config.reset"));
+                I18n.getString("tntimer.config.reset"));
         buttonList.add(withTooltip(reset, "reset"));
         buttonList.add(new GuiButton(ID_CANCEL, leftX + buttonWidth + gap, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("gui.cancel")));
+                I18n.getString("gui.cancel")));
         buttonList.add(new GuiButton(ID_DONE, leftX + (buttonWidth + gap) * 2, footerY, buttonWidth, ROW_HEIGHT,
-                I18n.format("gui.done")));
+                I18n.getString("gui.done")));
 
         updateModeWidgets();
     }
@@ -134,19 +134,19 @@ public class TNTimerConfigScreen extends GuiScreen {
     }
 
     private CycleButton<Boolean> onOff(int x, int y, String key, boolean initial, Consumer<Boolean> setter) {
-        return withTooltip(new CycleButton<>(nextId++, x, y, I18n.format("tntimer.config." + key + ".title"),
+        return withTooltip(new CycleButton<>(nextId++, x, y, I18n.getString("tntimer.config." + key + ".title"),
                 new Boolean[]{true, false}, initial,
-                value -> I18n.format(value ? "options.on" : "options.off"), setter), key);
+                value -> I18n.getString(value ? "options.on" : "options.off"), setter), key);
     }
 
     private IntSlider slider(int x, int y, String key, int min, int max, int step, int initial,
                              IntFunction<String> formatter, IntConsumer onChange) {
-        return withTooltip(new IntSlider(nextId++, x, y, I18n.format("tntimer.config." + key + ".title"),
+        return withTooltip(new IntSlider(nextId++, x, y, I18n.getString("tntimer.config." + key + ".title"),
                 min, max, step, initial, formatter, onChange), key);
     }
 
     private <T extends GuiButton> T withTooltip(T widget, String key) {
-        tooltips.put(widget, I18n.format("tntimer.config." + key + ".tooltip"));
+        tooltips.put(widget, I18n.getString("tntimer.config." + key + ".tooltip"));
         return widget;
     }
 
@@ -157,7 +157,7 @@ public class TNTimerConfigScreen extends GuiScreen {
     private void updateModeWidgets() {
         boolean hud = hudMode();
         for (GuiButton widget : hudWidgets) {
-            widget.visible = hud;
+            widget.drawButton = hud;
         }
     }
 
@@ -199,23 +199,35 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        drawCenteredString(this.fontRendererObj, I18n.format("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
-        drawCenteredString(this.fontRendererObj, I18n.format("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
-        drawString(this.fontRendererObj, I18n.format("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
-        drawString(this.fontRendererObj, I18n.format(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
+        drawCenteredString(this.fontRenderer, I18n.getString("tntimer.config.title"), this.width / 2, 12, TITLE_COLOR);
+        drawCenteredString(this.fontRenderer, I18n.getString("tntimer.config.subtitle"), this.width / 2, 23, SUBTITLE_COLOR);
+        drawString(this.fontRenderer, I18n.getString("tntimer.config.section.general"), leftX, TOP + 2, HEADER_COLOR);
+        drawString(this.fontRenderer, I18n.getString(hudMode() ? "tntimer.config.section.hud" : "tntimer.config.section.world"),
                 rightX, rightTop + 2, HEADER_COLOR);
         if (!hudMode()) {
-            this.fontRendererObj.drawSplitString(I18n.format("tntimer.config.section.world.info"),
+            this.fontRenderer.drawSplitString(I18n.getString("tntimer.config.section.world.info"),
                     rightX, rightTop + HEADER_HEIGHT + 2, COLUMN_WIDTH, SUBTITLE_COLOR);
         }
 
         for (Map.Entry<GuiButton, String> entry : tooltips.entrySet()) {
             GuiButton widget = entry.getKey();
-            if (widget.visible && widget.isMouseOver()) {
-                drawHoveringText(this.fontRendererObj.listFormattedStringToWidth(entry.getValue(), 200), mouseX, mouseY);
-                GL11.glDisable(GL11.GL_LIGHTING);
+            if (widget.drawButton && widget.func_82252_a()) { // visible && hovered
+                drawTooltip(this.fontRenderer.listFormattedStringToWidth(entry.getValue(), 200), mouseX, mouseY);
                 break;
             }
+        }
+    }
+
+    /** GuiScreen has no tooltip helper in 1.6; draw a simple dark box with the lines. */
+    private void drawTooltip(List<?> lines, int mouseX, int mouseY) {
+        int width = 0;
+        for (Object line : lines) width = Math.max(width, this.fontRenderer.getStringWidth((String) line));
+        int x = Math.min(mouseX + 12, this.width - width - 4);
+        int y = mouseY - 12;
+        int height = lines.size() * 10;
+        drawRect(x - 3, y - 3, x + width + 3, y + height + 1, 0xF0100010);
+        for (int i = 0; i < lines.size(); i++) {
+            this.fontRenderer.drawStringWithShadow((String) lines.get(i), x, y + i * 10, 0xFFFFFFFF);
         }
     }
 
@@ -310,7 +322,7 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         @Override
         protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-            if (!this.visible) return;
+            if (!this.drawButton) return;
             if (dragging) setFromMouse(mouseX);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int knobX = this.xPosition + (int) (value * (this.width - 8));

@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 public final class TNTimerKeys {
 
     public static final KeyBinding OPEN_CONFIG = new KeyBinding(
-            "key.tntimer.open_config", Keyboard.KEY_K, "key.category.tntimer.general");
+            "key.tntimer.open_config", Keyboard.KEY_K);
 
     private TNTimerKeys() {
     }
