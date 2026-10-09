@@ -124,8 +124,8 @@ public class TNTimerConfig {
         TNTimerConfig defaults = new TNTimerConfig();
         if (displayMode == null) displayMode = defaults.displayMode;
         if (position == null) position = defaults.position;
-        hudScale = MathHelper.clamp(hudScale, MIN_HUD_SCALE, MAX_HUD_SCALE);
-        maxTntDisplay = MathHelper.clamp(maxTntDisplay, 1, MAX_TNT_DISPLAY);
+        hudScale = MathHelper.clamp_float(hudScale, MIN_HUD_SCALE, MAX_HUD_SCALE);
+        maxTntDisplay = MathHelper.clamp_int(maxTntDisplay, 1, MAX_TNT_DISPLAY);
     }
 
     public TNTimerConfig copy() {

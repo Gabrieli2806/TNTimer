@@ -28,12 +28,12 @@ public final class TNTimerHudRenderer {
 
     public static void render() {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.world == null || mc.gameSettings.hideGUI) return;
+        if (mc.theWorld == null || mc.gameSettings.hideGUI) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-        List<Entity> entities = FusedEntities.collect(mc.world);
+        List<Entity> entities = FusedEntities.collect(mc.theWorld);
         if (entities.isEmpty()) return;
 
         // Soonest explosion first, so the most urgent timer is always on top.
@@ -44,7 +44,7 @@ public final class TNTimerHudRenderer {
         Arrays.sort(fuses);
 
         ScaledResolution resolution = new ScaledResolution(mc);
-        drawTimers(mc.fontRenderer, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
+        drawTimers(mc.fontRendererObj, fuses, resolution.getScaledWidth(), resolution.getScaledHeight(), config);
     }
 
     private static void drawTimers(FontRenderer font, int[] fuses, int screenWidth, int screenHeight,
@@ -105,7 +105,7 @@ public final class TNTimerHudRenderer {
             case BOTTOM_CENTER:
                 return screenHeight - HOTBAR_CLEARANCE - index * lineStep;
             default: // UNDER_CURSOR
-                return MathHelper.clamp(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
+                return MathHelper.clamp_int(screenHeight / 2 + CURSOR_OFFSET + index * lineStep,
                         5, screenHeight - textHeight - 5);
         }
     }

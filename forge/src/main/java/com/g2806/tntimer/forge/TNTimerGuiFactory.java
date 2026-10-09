@@ -1,6 +1,5 @@
 package com.g2806.tntimer.forge;
 
-import com.g2806.tntimer.TNTimer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
@@ -15,13 +14,20 @@ public class TNTimerGuiFactory implements IModGuiFactory {
     }
 
     @Override
-    public boolean hasConfigGui() {
-        return true;
+    public Class<? extends GuiScreen> mainConfigGuiClass() {
+        return ConfigScreen.class;
     }
 
     @Override
-    public GuiScreen createConfigGui(GuiScreen parent) {
-        return TNTimer.createConfigScreen(parent);
+    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
+        return null;
+    }
+
+    /** Forge before 1.12 instantiates the config screen reflectively with the parent screen. */
+    public static final class ConfigScreen extends com.g2806.tntimer.TNTimerConfigScreen {
+        public ConfigScreen(GuiScreen parent) {
+            super(parent);
+        }
     }
 
     @Override
