@@ -1,3 +1,7 @@
+## [3.0.2] - 2026-10-09
+### Fixed
+- 3D timer above TNT was never drawn; it now uses the vanilla nametag renderer
+
 ## [3.0.1] - 2026-10-09
 ### Added
 - Support for Minecraft 1.16.2 - 1.16.5 (same jar; the API it uses is identical across these versions)
