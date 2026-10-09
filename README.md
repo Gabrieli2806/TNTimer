@@ -28,8 +28,8 @@
 * Redstone - Coordinate timed explosions
 
 **Requirements**
-* Minecraft 1.16.5, Java 8
-* Fabric (Fabric API; Mod Menu optional) or Forge 36+
+* Minecraft 1.16.2 - 1.16.5, Java 8
+* Fabric (Fabric API; Mod Menu optional) or Forge 33+
 
 Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.
 
