@@ -8,5 +8,6 @@ neoForge {
 }
 
 dependencies {
-	compileOnly "net.fabricmc:sponge-mixin:${project.mixin_version}"
+	// Annotations only; non-transitive so its ASM version can't clash with Minecraft's pinned one.
+	compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}") { transitive = false }
 }
