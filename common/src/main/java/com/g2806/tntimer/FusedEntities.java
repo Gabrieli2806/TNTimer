@@ -10,8 +10,9 @@ import java.util.List;
 
 /**
  * Finds everything with a ticking explosion fuse: primed TNT and primed sulfur cubes
- * carrying TNT. The sulfur cube's fuse is synced to the client when it gets primed and
- * then counts down locally, just like PrimedTnt.
+ * carrying TNT. The sulfur cube's fuse is synced to the client (MAX_FUSE) when it gets
+ * primed and then counts down locally, just like PrimedTnt. Don't use canExplode():
+ * it is false once primed, and its explosion data is server-only.
  */
 public final class FusedEntities {
 
@@ -36,7 +37,7 @@ public final class FusedEntities {
         if (entity instanceof PrimedTnt tnt) {
             return tnt.getFuse();
         }
-        if (entity instanceof SulfurCube cube && cube.canExplode() && cube.isPrimed() && cube.getFuse() > 0) {
+        if (entity instanceof SulfurCube cube && cube.isPrimed() && cube.getFuse() > 0) {
             return cube.getFuse();
         }
         return NO_FUSE;
