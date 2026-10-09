@@ -1,0 +1,22 @@
+name: TNTimer
+main: com.g2806.tntimer.plugin.TNTimerPlugin
+version: '${version}'
+description: '${description}'
+author: '${authors}'
+website: https://modrinth.com/mod/tntimer
+# Loads on 1.13+ without legacy-material mode; ignored by older servers.
+api-version: '1.13'
+folia-supported: false
+
+commands:
+  tntimer:
+    description: Toggle or reload TNTimer.
+    usage: /<command> [toggle|reload]
+
+permissions:
+  tntimer.toggle:
+    description: Hide or show the timers for yourself.
+    default: true
+  tntimer.reload:
+    description: Reload the config.
+    default: op

@@ -1,0 +1,24 @@
+# TNTimer plugin settings. /tntimer reload applies changes.
+
+enabled: true
+
+# How the timer is shown:
+#   auto    - floating text display on 1.19.4+, entity name on older servers
+#   display - floating text display (1.19.4+ only; falls back to name)
+#   name    - the entity's own name tag (works on every version; one label for everyone)
+mode: auto
+
+# "3.4s" instead of "TNT: 3.4s".
+show-only-seconds: false
+
+# Also time primed sulfur cubes (Minecraft 26.2+; ignored on older servers).
+sulfur-cubes: true
+
+# Text display look (display mode only).
+display:
+  background: true
+  shadow: true
+  # Seen through blocks, like a nametag.
+  see-through: true
+  # Extra height above the entity, in blocks.
+  offset: 0.25

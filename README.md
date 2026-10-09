@@ -1,50 +1,59 @@
-![Tntimerlogo](https://cdn.modrinth.com/data/cached_images/f2e8250eb3dcefe943cb829d0971629f10811672.png)
+# TNTimer Plugin
 
-![SeparatorBar](https://cdn.modrinth.com/data/cached_images/cd452159c8ee74da3578ffd088abab56e5fe1c46.png)
+Server-side version of [TNTimer](https://modrinth.com/mod/tntimer): shows a countdown above every
+lit TNT, and above primed sulfur cubes on Minecraft 26.2+. Players don't need to install anything.
 
-**is a client-side mod that displays a precise countdown timer for TNT explosions, helping on explosive timing in Minecraft. For Minigames gameplay, TNT jumps, or just show when a TNT explode.**
+This branch (`plugin`) holds the Paper/Spigot plugin. The client mod lives on the `mc/*` branches.
 
-![SeparatorBar2](https://cdn.modrinth.com/data/cached_images/68771686d87d838b08514067a7fe490087de83d8.png)
+## Features
 
-**Features**
+* Countdown above each lit TNT, white, then gold under 2s and red under 1s (same as the mod)
+* Primed sulfur cubes (Minecraft 26.2+)
+* Floating text display on 1.19.4+, which never touches the entity's name; players can hide it
+  for themselves with `/tntimer toggle`
+* Entity name tag on older servers (1.8.8 - 1.19.3)
 
-*Dual Display Modes*
-* HUD Timer - On-screen list with 7 positions (top-left, top-right, bottom-left, bottom-right, top-center, bottom-center, under cursor) and adjustable text scale
-* 3D World Timer - Floating countdown directly above each TNT
+## Compatibility
 
-*Visual Info*
-* Color-coded warnings - White (2s or more), orange (under 2s), red (under 1s)
-* Clean, minimal design - Shows precise time in "3.5s" format
-* Optional HUD background for better readability
-* Sulfur cubes - Also tracks primed sulfur cubes carrying TNT (26.x)
+One jar for Paper, Spigot, Bukkit and Purpur, Minecraft 1.8.8 to 26.3. Newer features are
+detected at runtime:
 
-*Customization*
-* Track up to 20 timers at once; the most urgent (HUD) or closest (3D) are shown first
-* Settings screen with tooltips, via Mod Menu (Fabric) or the keybind (default: `K`)
-* Translated into English, Spanish, German, French, Italian, Japanese, Polish, Russian and Chinese
+| Server version   | How the timer is shown | `/tntimer toggle` | Sulfur cubes |
+|------------------|------------------------|-------------------|--------------|
+| 1.8.8 - 1.19.3   | Entity name tag        | No                | -            |
+| 1.19.4 - 26.1.x  | Text display           | Yes               | -            |
+| 26.2+            | Text display           | Yes               | Yes          |
 
-*Made For*
-* Minigames - Time TNT jumps perfectly in Bedwars, SkyWars, etc
-* Parkour - TNT jumps
-* Redstone - Coordinate timed explosions
+Folia isn't supported.
 
-**Requirements**
-* Minecraft 26.3, Java 25
-* Fabric (Loader 0.19.5+, Fabric API; Mod Menu optional), NeoForge 26.3 or Forge 66+
+## Commands and permissions
 
-Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.
+| Command            | Permission       | Default | Description                          |
+|--------------------|------------------|---------|--------------------------------------|
+| `/tntimer toggle`  | `tntimer.toggle` | all     | Hide or show the timers for yourself |
+| `/tntimer reload`  | `tntimer.reload` | op      | Reload `config.yml`                  |
 
-**Configuration**
+## Configuration
 
-Saved in `config/tntimer.json` (edit in-game with `K` or the mod list):
+`plugins/TNTimer/config.yml`:
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `enabled` | `true` | Turn all timers on or off |
-| `displayMode` | `WORLD` | `HUD` (on-screen list) or `WORLD` (label above each TNT) |
-| `maxTntDisplay` | `5` | Timers shown at once (1-20) |
-| `showOnlySeconds` | `true` | `3.4s` instead of `TNT: 3.4s` |
-| `showSulfurCubes` | `true` | Also time primed sulfur cubes carrying TNT |
-| `position` | `TOP_LEFT` | HUD anchor (7 positions) |
-| `showBackground` | `false` | Dark box behind HUD timers |
-| `hudScale` | `1.0` | HUD text scale (0.5-3.0) |
+```yaml
+enabled: true
+mode: auto            # auto | display | name
+show-only-seconds: false
+sulfur-cubes: true
+display:
+  background: true
+  shadow: true
+  see-through: true
+  offset: 0.25
+```
+
+## Building
+
+```
+./gradlew build
+```
+
+The jar is written to `build/libs/`. It compiles against the newest Spigot API but targets Java 8,
+so it loads on every supported server.

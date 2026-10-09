@@ -1,52 +1,34 @@
-subprojects {
-	apply plugin: 'java'
+plugins {
+	id 'java'
+}
 
-	group = project.mod_group_id
-	version = project.mod_version
+group = project.mod_group_id
+version = project.mod_version
+base.archivesName = "${project.mod_id}-plugin"
 
-	base {
-		archivesName = "${project.mod_id}-${project.name}"
-	}
+repositories {
+	mavenCentral()
+	maven { name = 'Spigot'; url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+	maven { name = 'Sonatype'; url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+}
 
-	repositories {
-		mavenCentral()
-		maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
-		maven { name = 'NeoForged'; url = 'https://maven.neoforged.net/releases' }
-		maven { name = 'MinecraftForge'; url = 'https://maven.minecraftforge.net/' }
-		maven { name = 'Terraformers'; url = 'https://maven.terraformersmc.com/' }
-	}
+dependencies {
+	compileOnly "org.spigotmc:spigot-api:${project.spigot_api_version}"
+}
 
-	java {
-		toolchain.languageVersion = JavaLanguageVersion.of(project.java_version as int)
-		withSourcesJar()
-	}
+java {
+	// Compile with a current JDK (the API jar is Java 21 bytecode) but emit Java 8 class files.
+	toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
 
-	tasks.withType(JavaCompile).configureEach {
-		it.options.encoding = 'UTF-8'
-		it.options.release = project.java_version as int
-	}
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = project.java_version as int
+	options.compilerArgs << '-Xlint:-options'
+}
 
-	tasks.withType(ProcessResources).configureEach {
-		var replacements = [
-				mod_id         : project.mod_id,
-				mod_name       : project.mod_name,
-				mod_version    : project.mod_version,
-				mod_authors    : project.mod_authors,
-				mod_license    : project.mod_license,
-				mod_description: project.mod_description,
-				java_version   : project.java_version,
-				minecraft_version   : project.minecraft_version,
-				minecraft_version_min: project.minecraft_version_min,
-				minecraft_version_next: project.minecraft_version_next,
-				fabric_loader_version: project.fabric_loader_version,
-				fabric_api_version  : project.fabric_api_version,
-				modmenu_version     : project.modmenu_version,
-				neoforge_version    : project.neoforge_version,
-				forge_version       : project.forge_version,
-		]
-		it.inputs.properties replacements
-		it.filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', 'META-INF/mods.toml']) {
-			expand replacements
-		}
-	}
+processResources {
+	var replacements = [version: project.mod_version, description: project.mod_description, authors: project.mod_authors]
+	inputs.properties replacements
+	filesMatching('plugin.yml') { expand replacements }
 }
