@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
+	"authors": [
+		"${mod_authors}"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/tntimer",
+		"sources": "https://github.com/Gabrieli2806/TNTimer",
+		"issues": "https://github.com/Gabrieli2806/TNTimer/issues"
+	},
+	"license": "${mod_license}",
+	"icon": "assets/tntimer/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.g2806.tntimer.fabric.TNTimerFabricClient"
+		],
+		"modmenu": [
+			"com.g2806.tntimer.fabric.TNTimerModMenuIntegration"
+		]
+	},
+	"mixins": [
+		"tntimer.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=${minecraft_version} <${minecraft_version_next}",
+		"java": ">=${java_version}",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.donate": "https://ko-fi.com/gabrieli2806",
+				"modmenu.discord": "https://discord.gg/DhBbAzugZ9"
+			},
+			"update_checker": true
+		}
+	}
+}
