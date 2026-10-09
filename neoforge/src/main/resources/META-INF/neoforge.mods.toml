@@ -18,7 +18,7 @@ config = "tntimer.mixins.json"
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.2,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "CLIENT"
 

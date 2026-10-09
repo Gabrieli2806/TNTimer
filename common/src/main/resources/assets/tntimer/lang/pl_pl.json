@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "Ile liczników pokazywać naraz. W 3D pokazywane są najbliższe.",
   "tntimer.config.show_only_seconds.title": "Tylko sekundy",
   "tntimer.config.show_only_seconds.tooltip": "Pokazuje \"3.4s\" zamiast \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Kostki siarki",
-  "tntimer.config.sulfur_cubes.tooltip": "Pokazuje też liczniki podpalonych kostek siarki z TNT.",
   "tntimer.config.position.title": "Pozycja",
   "tntimer.config.position.tooltip": "Gdzie na ekranie pojawia się lista liczników.",
   "tntimer.config.show_background.title": "Tło",

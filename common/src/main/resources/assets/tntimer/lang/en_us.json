@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "How many timers to show at once. In 3D mode the closest ones win.",
   "tntimer.config.show_only_seconds.title": "Show Only Seconds",
   "tntimer.config.show_only_seconds.tooltip": "Show \"3.4s\" instead of \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Sulfur Cubes",
-  "tntimer.config.sulfur_cubes.tooltip": "Also show timers for primed sulfur cubes carrying TNT.",
   "tntimer.config.position.title": "Position",
   "tntimer.config.position.tooltip": "Where the timer list sits on your screen.",
   "tntimer.config.show_background.title": "Background",

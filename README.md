@@ -16,7 +16,6 @@
 * Color-coded warnings - White (2s or more), orange (under 2s), red (under 1s)
 * Clean, minimal design - Shows precise time in "3.5s" format
 * Optional HUD background for better readability
-* Sulfur cubes - Also tracks primed sulfur cubes carrying TNT (26.x)
 
 *Customization*
 * Track up to 20 timers at once; the most urgent (HUD) or closest (3D) are shown first
@@ -29,8 +28,8 @@
 * Redstone - Coordinate timed explosions
 
 **Requirements**
-* Minecraft 26.2, Java 25
-* Fabric (Loader 0.19.5+, Fabric API; Mod Menu optional), NeoForge 26.2 or Forge 65+
+* Minecraft 26.1 - 26.1.2, Java 25
+* Fabric (Loader 0.19.5+, Fabric API; Mod Menu optional), NeoForge 26.1 or Forge 64+
 
 Client-Side - Works on any server without requiring server-side installation. Your timers are visible only to you.
 
@@ -44,7 +43,6 @@ Saved in `config/tntimer.json` (edit in-game with `K` or the mod list):
 | `displayMode` | `WORLD` | `HUD` (on-screen list) or `WORLD` (label above each TNT) |
 | `maxTntDisplay` | `5` | Timers shown at once (1-20) |
 | `showOnlySeconds` | `true` | `3.4s` instead of `TNT: 3.4s` |
-| `showSulfurCubes` | `true` | Also time primed sulfur cubes carrying TNT |
 | `position` | `TOP_LEFT` | HUD anchor (7 positions) |
 | `showBackground` | `false` | Dark box behind HUD timers |
 | `hudScale` | `1.0` | HUD text scale (0.5-3.0) |

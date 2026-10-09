@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "同時に表示するタイマーの数。3D では近いものが優先されます。",
   "tntimer.config.show_only_seconds.title": "秒のみ表示",
   "tntimer.config.show_only_seconds.tooltip": "\"TNT: 3.4s\" の代わりに \"3.4s\" を表示します。",
-  "tntimer.config.sulfur_cubes.title": "硫黄キューブ",
-  "tntimer.config.sulfur_cubes.tooltip": "TNT を持った点火済みの硫黄キューブのタイマーも表示します。",
   "tntimer.config.position.title": "位置",
   "tntimer.config.position.tooltip": "タイマー一覧を画面のどこに表示するか。",
   "tntimer.config.show_background.title": "背景",

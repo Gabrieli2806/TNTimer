@@ -3,17 +3,11 @@ package com.g2806.tntimer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.monster.cubemob.SulfurCube;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Finds everything with a ticking explosion fuse: primed TNT and primed sulfur cubes
- * carrying TNT. The sulfur cube's fuse is synced to the client (MAX_FUSE) when it gets
- * primed and then counts down locally, just like PrimedTnt. Don't use canExplode():
- * it is false once primed, and its explosion data is server-only.
- */
+/** Finds everything with a ticking explosion fuse (primed TNT). */
 public final class FusedEntities {
 
     /** Fuse value for entities that are not counting down. */
@@ -23,10 +17,9 @@ public final class FusedEntities {
     }
 
     /** All entities currently counting down, in no particular order. */
-    public static List<Entity> collect(ClientLevel level, boolean includeSulfurCubes) {
+    public static List<Entity> collect(ClientLevel level) {
         List<Entity> list = new ArrayList<>();
         for (Entity entity : level.entitiesForRendering()) {
-            if (!includeSulfurCubes && entity instanceof SulfurCube) continue;
             if (fuseOf(entity) != NO_FUSE) {
                 list.add(entity);
             }
@@ -38,9 +31,6 @@ public final class FusedEntities {
     public static int fuseOf(Entity entity) {
         if (entity instanceof PrimedTnt tnt) {
             return tnt.getFuse();
-        }
-        if (entity instanceof SulfurCube cube && cube.isPrimed() && cube.getFuse() > 0) {
-            return cube.getFuse();
         }
         return NO_FUSE;
     }

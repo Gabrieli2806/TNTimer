@@ -2,9 +2,9 @@
   "pack": {
     "description": "tntimer resources",
     "min_format": [
-      88,
+      84,
       0
     ],
-    "max_format": 88
+    "max_format": 84
   }
 }

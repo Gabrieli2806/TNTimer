@@ -28,12 +28,12 @@ public final class TNTimerHudRenderer {
 
     public static void render(GuiGraphicsExtractor context) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.gui.hud.isHidden()) return;
+        if (mc.level == null || mc.options.hideGui) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.HUD) return;
 
-        List<Entity> entities = FusedEntities.collect(mc.level, config.showSulfurCubes);
+        List<Entity> entities = FusedEntities.collect(mc.level);
         if (entities.isEmpty()) return;
 
         // Soonest explosion first, so the most urgent timer is always on top.

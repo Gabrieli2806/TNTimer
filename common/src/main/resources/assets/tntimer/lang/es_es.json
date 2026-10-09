@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "Cuántos contadores mostrar a la vez. En 3D se muestran los más cercanos.",
   "tntimer.config.show_only_seconds.title": "Solo segundos",
   "tntimer.config.show_only_seconds.tooltip": "Muestra \"3.4s\" en vez de \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Cubos de azufre",
-  "tntimer.config.sulfur_cubes.tooltip": "También muestra contadores de cubos de azufre encendidos con TNT.",
   "tntimer.config.position.title": "Posición",
   "tntimer.config.position.tooltip": "Dónde aparece la lista de contadores en la pantalla.",
   "tntimer.config.show_background.title": "Fondo",

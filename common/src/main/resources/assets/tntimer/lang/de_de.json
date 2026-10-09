@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "Wie viele Timer gleichzeitig angezeigt werden. Im 3D-Modus die nächsten.",
   "tntimer.config.show_only_seconds.title": "Nur Sekunden",
   "tntimer.config.show_only_seconds.tooltip": "Zeigt \"3.4s\" statt \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Schwefelwürfel",
-  "tntimer.config.sulfur_cubes.tooltip": "Zeigt auch Timer für gezündete Schwefelwürfel mit TNT.",
   "tntimer.config.position.title": "Position",
   "tntimer.config.position.tooltip": "Wo die Timer-Liste auf dem Bildschirm erscheint.",
   "tntimer.config.show_background.title": "Hintergrund",

@@ -80,8 +80,6 @@ public class TNTimerConfigScreen extends Screen {
                 working.maxTntDisplay, String::valueOf, val -> working.maxTntDisplay = val), y);
         y = addRow(onOff(leftX, y, "show_only_seconds", working.showOnlySeconds,
                 val -> working.showOnlySeconds = val), y);
-        y = addRow(onOff(leftX, y, "sulfur_cubes", working.showSulfurCubes,
-                val -> working.showSulfurCubes = val), y);
         leftBottom = y;
 
         // ---- Mode-specific: only the active mode's section is visible ----

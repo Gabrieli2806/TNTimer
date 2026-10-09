@@ -3,14 +3,14 @@ package com.g2806.tntimer.mixin;
 import com.g2806.tntimer.TNTimerHudRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.Hud;
+import net.minecraft.client.gui.Gui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /** Shared HUD hook: draws the flat overlay after vanilla HUD elements are extracted. */
-@Mixin(Hud.class)
+@Mixin(Gui.class)
 public class HudMixin {
 
     @Inject(method = "extractRenderState", at = @At("TAIL"))

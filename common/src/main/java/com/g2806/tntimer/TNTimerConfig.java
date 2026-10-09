@@ -32,7 +32,6 @@ public class TNTimerConfig {
     public int maxTntDisplay = 5;
     public boolean showOnlySeconds = true;
     public boolean showBackground = false;
-    public boolean showSulfurCubes = true;
     public float hudScale = 1.0f;
 
     public static final float MIN_HUD_SCALE = 0.5f;
@@ -141,7 +140,6 @@ public class TNTimerConfig {
         maxTntDisplay = other.maxTntDisplay;
         showOnlySeconds = other.showOnlySeconds;
         showBackground = other.showBackground;
-        showSulfurCubes = other.showSulfurCubes;
         hudScale = other.hudScale;
     }
 

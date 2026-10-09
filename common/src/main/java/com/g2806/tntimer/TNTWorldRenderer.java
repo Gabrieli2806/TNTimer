@@ -31,7 +31,7 @@ public final class TNTWorldRenderer {
     public static void submit(PoseStack poseStack, LevelRenderState levelState, SubmitNodeCollector collector) {
         Minecraft mc = Minecraft.getInstance();
         // Vanilla hides nametags with F1, so do the same for ours.
-        if (mc.level == null || mc.gui.hud.isHidden()) return;
+        if (mc.level == null || mc.options.hideGui) return;
 
         TNTimerConfig config = TNTimerConfig.getInstance();
         if (!config.enabled || config.displayMode != TNTimerConfig.DisplayMode.WORLD) return;
@@ -42,7 +42,7 @@ public final class TNTWorldRenderer {
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
         // No distance filter: vanilla nametag rendering already hides far-away labels.
-        List<Entity> entities = FusedEntities.collect(mc.level, config.showSulfurCubes);
+        List<Entity> entities = FusedEntities.collect(mc.level);
         if (entities.isEmpty()) return;
 
         // Closest first, so the max-timers limit keeps the labels that matter most.
@@ -72,7 +72,7 @@ public final class TNTWorldRenderer {
         // Same arguments as vanilla EntityRenderer.submitNameDisplay: attachment point,
         // no extra y offset, always visible (not sneaking), full bright.
         collector.submitNameTag(poseStack, nameTagAttachment, 0, label, true,
-                LightCoordsUtil.FULL_BRIGHT, cameraState);
+                LightCoordsUtil.FULL_BRIGHT, entity.distanceToSqr(cameraPos), cameraState);
 
         poseStack.popPose();
     }

@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "Nombre de minuteurs affichés à la fois. En 3D, les plus proches sont gardés.",
   "tntimer.config.show_only_seconds.title": "Secondes seulement",
   "tntimer.config.show_only_seconds.tooltip": "Affiche \"3.4s\" au lieu de \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Cubes de soufre",
-  "tntimer.config.sulfur_cubes.tooltip": "Affiche aussi les minuteurs des cubes de soufre amorcés contenant de la TNT.",
   "tntimer.config.position.title": "Position",
   "tntimer.config.position.tooltip": "Emplacement de la liste des minuteurs à l'écran.",
   "tntimer.config.show_background.title": "Fond",

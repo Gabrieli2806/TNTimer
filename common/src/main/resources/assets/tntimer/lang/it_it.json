@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "Quanti timer mostrare insieme. In 3D vengono mostrati i più vicini.",
   "tntimer.config.show_only_seconds.title": "Solo secondi",
   "tntimer.config.show_only_seconds.tooltip": "Mostra \"3.4s\" invece di \"TNT: 3.4s\".",
-  "tntimer.config.sulfur_cubes.title": "Cubi di zolfo",
-  "tntimer.config.sulfur_cubes.tooltip": "Mostra anche i timer dei cubi di zolfo innescati con TNT.",
   "tntimer.config.position.title": "Posizione",
   "tntimer.config.position.tooltip": "Dove appare l'elenco dei timer sullo schermo.",
   "tntimer.config.show_background.title": "Sfondo",

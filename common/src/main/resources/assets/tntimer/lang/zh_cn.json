@@ -12,8 +12,6 @@
   "tntimer.config.max_tnt.tooltip": "同时显示的计时器数量。3D 模式下优先显示最近的。",
   "tntimer.config.show_only_seconds.title": "仅显示秒数",
   "tntimer.config.show_only_seconds.tooltip": "显示 \"3.4s\" 而不是 \"TNT: 3.4s\"。",
-  "tntimer.config.sulfur_cubes.title": "硫磺方块怪",
-  "tntimer.config.sulfur_cubes.tooltip": "同时显示携带 TNT 且已点燃的硫磺方块怪的计时器。",
   "tntimer.config.position.title": "位置",
   "tntimer.config.position.tooltip": "计时器列表在屏幕上的位置。",
   "tntimer.config.show_background.title": "背景",

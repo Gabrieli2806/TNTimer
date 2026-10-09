@@ -27,7 +27,7 @@ public final class TNTimer {
     /** Opens the config screen over whatever screen is currently shown. */
     public static void openConfigScreen() {
         Minecraft mc = Minecraft.getInstance();
-        mc.setScreenAndShow(createConfigScreen(mc.gui.screen()));
+        mc.setScreenAndShow(createConfigScreen(mc.screen));
     }
 
     public static Screen createConfigScreen(Screen parent) {
