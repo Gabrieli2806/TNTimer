@@ -1,0 +1,18 @@
+pluginManagement {
+	repositories {
+		maven { name = 'MinecraftForge'; url = 'https://maven.minecraftforge.net/' }
+		maven { name = 'WagYourTail'; url = 'https://maven.wagyourtail.xyz/releases' }
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+plugins {
+	// Lets Gradle download the Java toolchains on machines (and CI) that don't have them.
+	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.10.0'
+}
+
+rootProject.name = 'TNTimer'
+
+include 'common'
+include 'forge'

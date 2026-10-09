@@ -1,0 +1,14 @@
+plugins {
+	id 'xyz.wagyourtail.unimined' version '1.4.1'
+}
+
+// Vanilla Minecraft with MCP names; loader modules recompile these sources.
+unimined.minecraft {
+	version project.minecraft_version
+	side 'client'
+
+	mappings {
+		searge()
+		mcp(project.mcp_channel, project.mcp_version)
+	}
+}
