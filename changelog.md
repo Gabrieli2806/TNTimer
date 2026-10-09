@@ -1,3 +1,7 @@
+## [3.0.2] - 2026-10-09
+### Fixed
+- 3D timer above TNT was never drawn; it now uses the vanilla nametag renderer
+
 ## [3.0.1] - 2026-10-09
 ### Added
 - 3D display mode: the timer floats above each TNT, like a nametag
