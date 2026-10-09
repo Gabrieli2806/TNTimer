@@ -1,7 +1,11 @@
 package com.g2806.tntimer.neoforge;
 
 import com.g2806.tntimer.TNTimer;
+import com.g2806.tntimer.TNTimerHudRenderer;
 import com.g2806.tntimer.TNTimerKeys;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
@@ -25,6 +29,11 @@ public class TNTimerNeoForge {
                 () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> TNTimer.createConfigScreen(parent)));
 
         modBus.addListener(RegisterKeyMappingsEvent.class, event -> event.register(TNTimerKeys.OPEN_CONFIG));
+
+        // The loader replaces vanilla's Gui.render, so the HUD mixin can't run; draw from its event.
+        NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post event) -> {
+            if (Minecraft.getInstance().gui.getClass() != Gui.class) TNTimerHudRenderer.render(event.getGuiGraphics());
+        });
 
         NeoForge.EVENT_BUS.addListener(TickEvent.ClientTickEvent.class, event -> {
             if (event.phase == TickEvent.Phase.END) TNTimerKeys.handlePresses();

@@ -14,6 +14,8 @@ public class HudMixin {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void tntimer$renderCountdown(GuiGraphics graphics, float partialTick, CallbackInfo ci) {
+        // Forge/NeoForge swap in their own Gui subclass and draw the HUD from an event instead.
+        if (((Object) this).getClass() != Gui.class) return;
         TNTimerHudRenderer.render(graphics);
     }
 }

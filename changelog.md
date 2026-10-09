@@ -1,3 +1,7 @@
+## [3.0.3] - 2026-10-09
+### Fixed
+- HUD display mode showed nothing on Forge/NeoForge (their GUI replaces vanilla's render)
+
 ## [3.0.2] - 2026-10-09
 ### Fixed
 - 3D timer above TNT was never drawn; it now uses the vanilla nametag renderer
