@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
 
 /**
  * Settings screen: general options on the left, options for the selected display mode on
@@ -75,17 +71,44 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         // ---- General ----
         int y = TOP + HEADER_HEIGHT;
-        y = addRow(onOff(leftX, y, "enabled", working.enabled, val -> working.enabled = val), y);
+        y = addRow(onOff(leftX, y, "enabled", working.enabled, new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean val) {
+                working.enabled = val;
+            }
+        }), y);
         y = addRow(withTooltip(new CycleButton<>(nextId++, leftX, y, StringTranslate.getInstance().translateKey("tntimer.config.display_mode.title"),
-                TNTimerConfig.DisplayMode.values(), working.displayMode, TNTimerConfig.DisplayMode::getDisplayName,
-                val -> {
-                    working.displayMode = val;
-                    updateModeWidgets();
-                }), "display_mode"), y);
+                TNTimerConfig.DisplayMode.values(), working.displayMode, new Function<TNTimerConfig.DisplayMode, String>() {
+            @Override
+            public String apply(TNTimerConfig.DisplayMode mode) {
+                return mode.getDisplayName();
+            }
+        }, new Consumer<TNTimerConfig.DisplayMode>() {
+            @Override
+            public void accept(TNTimerConfig.DisplayMode val) {
+                working.displayMode = val;
+                updateModeWidgets();
+            }
+        }), "display_mode"), y);
         y = addRow(slider(leftX, y, "max_tnt", 1, TNTimerConfig.MAX_TNT_DISPLAY, 1,
-                working.maxTntDisplay, String::valueOf, val -> working.maxTntDisplay = val), y);
+                working.maxTntDisplay, new IntFunction<String>() {
+            @Override
+            public String apply(int val) {
+                return String.valueOf(val);
+            }
+        }, new IntConsumer() {
+            @Override
+            public void accept(int val) {
+                working.maxTntDisplay = val;
+            }
+        }), y);
         y = addRow(onOff(leftX, y, "show_only_seconds", working.showOnlySeconds,
-                val -> working.showOnlySeconds = val), y);
+                new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean val) {
+                working.showOnlySeconds = val;
+            }
+        }), y);
         leftBottom = y;
 
         // ---- Mode-specific: only the active mode's section is visible ----
@@ -94,13 +117,37 @@ public class TNTimerConfigScreen extends GuiScreen {
 
         int hy = modeY;
         hy = addRow(track(withTooltip(new CycleButton<>(nextId++, rightX, hy, StringTranslate.getInstance().translateKey("tntimer.config.position.title"),
-                TNTimerConfig.Position.values(), working.position, TNTimerConfig.Position::getDisplayName,
-                val -> working.position = val), "position")), hy);
+                TNTimerConfig.Position.values(), working.position, new Function<TNTimerConfig.Position, String>() {
+            @Override
+            public String apply(TNTimerConfig.Position position) {
+                return position.getDisplayName();
+            }
+        }, new Consumer<TNTimerConfig.Position>() {
+            @Override
+            public void accept(TNTimerConfig.Position val) {
+                working.position = val;
+            }
+        }), "position")), hy);
         hy = addRow(track(onOff(rightX, hy, "show_background", working.showBackground,
-                val -> working.showBackground = val)), hy);
+                new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean val) {
+                working.showBackground = val;
+            }
+        })), hy);
         hy = addRow(track(slider(rightX, hy, "hud_scale",
                 Math.round(TNTimerConfig.MIN_HUD_SCALE * 100), Math.round(TNTimerConfig.MAX_HUD_SCALE * 100), 10,
-                Math.round(working.hudScale * 100), val -> val + "%", val -> working.hudScale = val / 100f)), hy);
+                Math.round(working.hudScale * 100), new IntFunction<String>() {
+            @Override
+            public String apply(int val) {
+                return val + "%";
+            }
+        }, new IntConsumer() {
+            @Override
+            public void accept(int val) {
+                working.hudScale = val / 100f;
+            }
+        })), hy);
         hudBottom = hy;
 
         // 3D mode has no extra options; its panel only holds a short note.
@@ -136,7 +183,12 @@ public class TNTimerConfigScreen extends GuiScreen {
     private CycleButton<Boolean> onOff(int x, int y, String key, boolean initial, Consumer<Boolean> setter) {
         return withTooltip(new CycleButton<>(nextId++, x, y, StringTranslate.getInstance().translateKey("tntimer.config." + key + ".title"),
                 new Boolean[]{true, false}, initial,
-                value -> StringTranslate.getInstance().translateKey(value ? "options.on" : "options.off"), setter), key);
+                new Function<Boolean, String>() {
+                    @Override
+                    public String apply(Boolean value) {
+                        return StringTranslate.getInstance().translateKey(value ? "options.on" : "options.off");
+                    }
+                }, setter), key);
     }
 
     private IntSlider slider(int x, int y, String key, int min, int max, int step, int initial,
@@ -241,6 +293,23 @@ public class TNTimerConfigScreen extends GuiScreen {
         drawRect(x0, y1 - 1, x1, y1, PANEL_BORDER);
         drawRect(x0, y0 + 1, x0 + 1, y1 - 1, PANEL_BORDER);
         drawRect(x1 - 1, y0 + 1, x1, y1 - 1, PANEL_BORDER);
+    }
+
+    // Minimal stand-ins for java.util.function, which needs Java 8.
+    private interface Consumer<T> {
+        void accept(T value);
+    }
+
+    private interface Function<T, R> {
+        R apply(T value);
+    }
+
+    private interface IntConsumer {
+        void accept(int value);
+    }
+
+    private interface IntFunction<R> {
+        R apply(int value);
     }
 
     /** Button that cycles through a fixed set of values and shows "Label: value". */

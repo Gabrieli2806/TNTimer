@@ -15,6 +15,9 @@ subprojects {
 
 	java {
 		toolchain.languageVersion = JavaLanguageVersion.of(project.java_version as int)
+		// FML before 1.7 reads mod classes with ASM 4, which only understands Java 7 class files.
+		sourceCompatibility = JavaVersion.VERSION_1_7
+		targetCompatibility = JavaVersion.VERSION_1_7
 		withSourcesJar()
 	}
 
