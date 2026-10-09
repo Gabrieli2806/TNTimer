@@ -2,8 +2,8 @@ package com.g2806.tntimer.forge;
 
 import com.g2806.tntimer.TNTimer;
 import com.g2806.tntimer.TNTimerKeys;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.fmlclient.ConfigGuiHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.ModLoadingContext;

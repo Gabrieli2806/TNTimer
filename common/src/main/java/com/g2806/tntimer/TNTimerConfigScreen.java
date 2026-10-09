@@ -236,7 +236,7 @@ public class TNTimerConfigScreen extends Screen {
 
         for (Map.Entry<AbstractWidget, Component> entry : tooltips.entrySet()) {
             AbstractWidget widget = entry.getKey();
-            if (widget.visible && widget.isHoveredOrFocused() && widget.isMouseOver(mouseX, mouseY)) {
+            if (widget.visible && widget.isMouseOver(mouseX, mouseY)) {
                 renderTooltip(graphics, this.font.split(entry.getValue(), 200), mouseX, mouseY);
                 break;
             }
