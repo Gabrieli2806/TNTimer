@@ -1,3 +1,7 @@
+## [3.0.1] - 2026-10-09
+### Added
+- Support for Minecraft 1.17 - 1.17.1 (same jar; the API it uses is identical across these versions)
+
 ## [3.0.0] - 2026-10-08
 ### Added
 - Forge support (multiloader: Fabric and Forge)
