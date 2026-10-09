@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Gui.class)
 public class HudMixin {
 
-    @Inject(method = "render", at = @At("TAIL"))
+    // RETURN, not TAIL: Forge returns early from render() after drawing its own layered HUD.
+    @Inject(method = "render", at = @At("RETURN"))
     private void tntimer$renderCountdown(GuiGraphics graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         TNTimerHudRenderer.render(graphics);
     }

@@ -1,3 +1,7 @@
+## [3.0.2] - 2026-10-09
+### Fixed
+- HUD display mode showed nothing on Forge (its HUD returns early from Gui.render)
+
 ## [3.0.1] - 2026-10-09
 ### Fixed
 - Forge: settings, keybind and display names showed raw translation keys (the mod's resources were missing pack metadata)
