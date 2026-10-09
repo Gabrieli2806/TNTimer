@@ -98,9 +98,9 @@ public final class TNTWorldRenderer {
         // Same two passes as a vanilla nametag: faint see-through text with background,
         // then the solid text on top.
         font.drawInBatch(label, x, 0, SEE_THROUGH_COLOR, false, matrix, bufferSource,
-                Font.DisplayMode.SEE_THROUGH, backgroundColor, LightTexture.FULL_BRIGHT);
+                true, backgroundColor, LightTexture.FULL_BRIGHT);
         font.drawInBatch(label, x, 0, -1, false, matrix, bufferSource,
-                Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+                false, 0, LightTexture.FULL_BRIGHT);
 
         poseStack.popPose();
     }
