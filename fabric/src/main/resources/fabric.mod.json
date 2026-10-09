@@ -30,7 +30,7 @@
 		"fabricloader": "*",
 		"minecraft": ">=${minecraft_version_min} <${minecraft_version_next}",
 		"java": ">=${java_version}",
-		"fabric-api": "*"
+		"fabric": "*"
 	},
 	"suggests": {
 		"modmenu": "*"
